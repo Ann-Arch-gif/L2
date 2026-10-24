@@ -31,6 +31,8 @@ export const serviceOptions = [
   {title: 'Motorbike parking', value: 'motorbikeParking'},
   {title: 'Car parking', value: 'carParking'},
   {title: '24-hour security', value: 'security'},
+  {title: 'Smart key access', value: 'smartKey'},
+  {title: 'Bedding change every 2 weeks', value: 'beddingChange'},
   {title: 'CCTV cameras', value: 'cctv'},
   {title: 'Rubbish collection', value: 'rubbish'},
   {title: 'Drinking water', value: 'drinkingWater'},

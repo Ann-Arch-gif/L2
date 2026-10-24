@@ -91,6 +91,8 @@ export const serviceIcons: Record<string, IconName> = {
   motorbikeParking: "motorbike",
   carParking: "car",
   security: "shield",
+  smartKey: "key",
+  beddingChange: "bed",
   cctv: "cctv",
   rubbish: "trash",
   drinkingWater: "droplet",
