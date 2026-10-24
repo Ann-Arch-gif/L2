@@ -1,0 +1,83 @@
+[
+  {
+    "slug": "garden-studio",
+    "hidden": false,
+    "name": {
+      "en": "Garden Studio",
+      "km": "បន្ទប់ស្ទូឌីយោមុខសួន",
+      "zh": "花园景开间"
+    },
+    "summary": {
+      "en": "A bright, cozy studio facing the garden — perfect for one person.",
+      "km": "បន្ទប់ស្ទូឌីយោភ្លឺ និងកក់ក្តៅ បែរមុខទៅសួនច្បារ — សមស្របសម្រាប់មនុស្សម្នាក់។",
+      "zh": "明亮温馨的开间，面朝花园，非常适合单人居住。"
+    },
+    "description": {
+      "en": "Wake up to green views and birdsong. This studio has everything you need for a comfortable stay: a comfortable bed, a work desk with fast Wi-Fi, a small kitchenette and a private bathroom with hot water.\n\nThe garden is just outside your door, and our family lives on site, so help is never far away.",
+      "km": "ភ្ញាក់ពីគេងជាមួយទេសភាពបៃតង និងសំឡេងបក្សី។ បន្ទប់ស្ទូឌីយោនេះមានគ្រប់យ៉ាងដែលអ្នកត្រូវការ៖ គ្រែស្រួលគេង តុធ្វើការជាមួយវ៉ាយហ្វាយលឿន ផ្ទះបាយតូច និងបន្ទប់ទឹកឯកជនមានទឹកក្តៅ។\n\nសួនច្បារនៅមុខទ្វារបន្ទប់ ហើយគ្រួសារយើងរស់នៅទីនេះផ្ទាល់ ដូច្នេះអ្នកអាចសុំជំនួយបានគ្រប់ពេល។",
+      "zh": "每天在绿意和鸟鸣中醒来。开间配备舒适居住所需的一切：舒适的床、带高速Wi-Fi的办公桌、小厨房，以及带热水的独立卫浴。\n\n花园就在门外，我们一家人也住在这里，有任何需要随时可以找我们。"
+    },
+    "priceFrom": 250,
+    "size": 28,
+    "bed": { "en": "1 queen bed", "km": "គ្រែធំ ១", "zh": "1张大床" },
+    "capacity": 1,
+    "status": "available",
+    "availableFrom": "",
+    "photos": [],
+    "amenities": ["ac", "wifi", "hotWater", "fridge", "kitchenette", "wardrobe", "desk", "privateBathroom"]
+  },
+  {
+    "slug": "deluxe-one-bedroom",
+    "hidden": false,
+    "name": {
+      "en": "Deluxe One-Bedroom",
+      "km": "បន្ទប់គេងមួយ ប្រភេទលំដាប់ខ្ពស់",
+      "zh": "豪华一居室"
+    },
+    "summary": {
+      "en": "Separate bedroom and living room with a full kitchen and balcony.",
+      "km": "បន្ទប់គេង និងបន្ទប់ទទួលភ្ញៀវដាច់ដោយឡែក មានផ្ទះបាយពេញលេញ និងរានហាល។",
+      "zh": "卧室与客厅分开，配有全套厨房和阳台。"
+    },
+    "description": {
+      "en": "More space to live and work. The bedroom is separate from the living area, so you can relax or host friends comfortably. The full kitchen has a stove, fridge and cooking equipment, and the balcony is perfect for morning coffee.\n\nIdeal for professionals or couples planning a longer stay in Siem Reap.",
+      "km": "មានទំហំធំសម្រាប់រស់នៅ និងធ្វើការ។ បន្ទប់គេងនៅដាច់ពីកន្លែងអង្គុយលេង ដូច្នេះអ្នកអាចសម្រាក ឬទទួលមិត្តភក្តិបានយ៉ាងស្រួល។ ផ្ទះបាយពេញលេញមានចង្ក្រាន ទូទឹកកក និងឧបករណ៍ចម្អិនអាហារ ហើយរានហាលល្អឥតខ្ចោះសម្រាប់ផឹកកាហ្វេពេលព្រឹក។\n\nសមស្របសម្រាប់អ្នកជំនាញ ឬគូស្វាមីភរិយាដែលគ្រោងស្នាក់នៅសៀមរាបយូរ។",
+      "zh": "更大的生活和工作空间。卧室与客厅分开，您可以安心休息或舒适地招待朋友。全套厨房配有炉灶、冰箱和厨具，阳台是享用早晨咖啡的好地方。\n\n非常适合计划在暹粒长住的专业人士或情侣。"
+    },
+    "priceFrom": 380,
+    "size": 45,
+    "bed": { "en": "1 king bed", "km": "គ្រែធំពិសេស ១", "zh": "1张特大床" },
+    "capacity": 2,
+    "status": "soon",
+    "availableFrom": "2026-12-01",
+    "photos": [],
+    "amenities": ["ac", "wifi", "hotWater", "fridge", "kitchen", "washingMachine", "tv", "sofa", "wardrobe", "desk", "balcony", "privateBathroom"]
+  },
+  {
+    "slug": "family-two-bedroom",
+    "hidden": false,
+    "name": {
+      "en": "Family Two-Bedroom",
+      "km": "បន្ទប់គេងពីរ សម្រាប់គ្រួសារ",
+      "zh": "家庭两居室"
+    },
+    "summary": {
+      "en": "Two bedrooms, two bathrooms and room for the whole family.",
+      "km": "បន្ទប់គេងពីរ បន្ទប់ទឹកពីរ និងកន្លែងគ្រប់គ្រាន់សម្រាប់គ្រួសារទាំងមូល។",
+      "zh": "两间卧室、两间浴室，全家人住得宽敞。"
+    },
+    "description": {
+      "en": "Our largest apartment, designed for families or friends sharing. Two bedrooms with their own bathrooms, a spacious living and dining area, and a fully equipped kitchen.\n\nCovered parking and a quiet location make everyday life easy.",
+      "km": "អាផាតមិនធំជាងគេរបស់យើង រចនាឡើងសម្រាប់គ្រួសារ ឬមិត្តភក្តិស្នាក់នៅរួមគ្នា។ បន្ទប់គេងពីរមានបន្ទប់ទឹកផ្ទាល់ខ្លួន កន្លែងអង្គុយលេង និងបរិភោគអាហារធំទូលាយ និងផ្ទះបាយបំពាក់ឧបករណ៍គ្រប់គ្រាន់។\n\nចំណតរថយន្តមានដំបូល និងទីតាំងស្ងប់ស្ងាត់ ធ្វើឱ្យជីវិតប្រចាំថ្ងៃងាយស្រួល។",
+      "zh": "我们最大的公寓，专为家庭或合租朋友设计。两间卧室各带独立卫浴，宽敞的客厅和餐厅，以及设备齐全的厨房。\n\n有顶棚停车位，环境安静，日常生活十分便利。"
+    },
+    "priceFrom": 550,
+    "size": 70,
+    "bed": { "en": "2 queen beds", "km": "គ្រែធំ ២", "zh": "2张大床" },
+    "capacity": 4,
+    "status": "rented",
+    "availableFrom": "",
+    "photos": [],
+    "amenities": ["ac", "wifi", "hotWater", "fridge", "kitchen", "washingMachine", "tv", "sofa", "diningTable", "wardrobe", "balcony", "parking"]
+  }
+]
