@@ -247,7 +247,7 @@
   },
   "serviceItems": {
     "wifi": "Wi-Fi internet",
-    "cleaning": "Room cleaning",
+    "cleaning": "Room cleaning service",
     "laundry": "Laundry service",
     "linen": "Fresh bed linen & towels",
     "motorbikeParking": "Motorbike parking",
@@ -260,7 +260,7 @@
     "drinkingWater": "Drinking water",
     "maintenance": "Repairs & maintenance",
     "cableTv": "Cable TV",
-    "pool": "Swimming pool",
+    "pool": "Clean swimming pool",
     "gym": "Gym",
     "garden": "Garden"
   },

@@ -17,6 +17,16 @@ export function Services({ dict, services }: { dict: Dictionary; services: strin
               <span className="text-[0.9375rem] font-medium text-ink">{featureLabel(dict.serviceItems, key)}</span>
             </li>
           ))}
+          {/* Empty cells so the last row keeps its borders (2 columns on phones, 4 from md up). */}
+          {Array.from({ length: Math.max((4 - (services.length % 4)) % 4, services.length % 2) }, (_, i) => (
+            <li
+              key={`filler-${i}`}
+              aria-hidden="true"
+              className={`border-b border-r border-line ${i < services.length % 2 ? "" : "hidden"} ${
+                i < (4 - (services.length % 4)) % 4 ? "md:block" : "md:hidden"
+              }`}
+            />
+          ))}
         </ul>
       </div>
     </section>

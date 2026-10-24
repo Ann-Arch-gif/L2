@@ -247,7 +247,7 @@
   },
   "serviceItems": {
     "wifi": "Wi-Fi网络",
-    "cleaning": "房间清洁",
+    "cleaning": "房间清洁服务",
     "laundry": "洗衣服务",
     "linen": "更换床单和毛巾",
     "motorbikeParking": "摩托车停车位",
@@ -260,7 +260,7 @@
     "drinkingWater": "饮用水",
     "maintenance": "维修保养",
     "cableTv": "有线电视",
-    "pool": "游泳池",
+    "pool": "干净的游泳池",
     "gym": "健身房",
     "garden": "花园"
   },

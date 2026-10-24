@@ -25,7 +25,7 @@ export const furnitureOptions = [
 
 export const serviceOptions = [
   {title: 'Wi-Fi internet', value: 'wifi'},
-  {title: 'Room cleaning', value: 'cleaning'},
+  {title: 'Room cleaning service', value: 'cleaning'},
   {title: 'Laundry service', value: 'laundry'},
   {title: 'Fresh bed linen & towels', value: 'linen'},
   {title: 'Motorbike parking', value: 'motorbikeParking'},
@@ -38,7 +38,7 @@ export const serviceOptions = [
   {title: 'Drinking water', value: 'drinkingWater'},
   {title: 'Repairs & maintenance', value: 'maintenance'},
   {title: 'Cable TV', value: 'cableTv'},
-  {title: 'Swimming pool', value: 'pool'},
+  {title: 'Clean swimming pool', value: 'pool'},
   {title: 'Gym', value: 'gym'},
   {title: 'Garden', value: 'garden'},
 ]
