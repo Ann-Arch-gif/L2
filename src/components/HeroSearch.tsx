@@ -38,21 +38,21 @@ export function HeroSearch({
       onSubmit={onSubmit}
       className="grid w-full max-w-3xl gap-px bg-line shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)] sm:grid-cols-[1fr_1fr_auto]"
     >
-      <label className="block bg-white px-5 py-3">
-        <span className="label !mb-1 !text-[0.6875rem] !text-muted">{t.moveIn}</span>
+      <label className="block cursor-pointer bg-white px-5 py-2">
+        <span className="label !mb-0.5 !text-xs !text-muted">{t.moveIn}</span>
         <input
           type="date"
           value={moveIn}
           onChange={(e) => setMoveIn(e.target.value)}
-          className="w-full bg-transparent text-[0.9375rem] font-medium text-ink outline-none"
+          className="h-10 w-full cursor-pointer bg-transparent text-base font-medium text-ink outline-none"
         />
       </label>
-      <label className="block bg-white px-5 py-3">
-        <span className="label !mb-1 !text-[0.6875rem] !text-muted">{t.budget}</span>
+      <label className="block cursor-pointer bg-white px-5 py-2">
+        <span className="label !mb-0.5 !text-xs !text-muted">{t.budget}</span>
         <select
           value={max}
           onChange={(e) => setMax(e.target.value)}
-          className="w-full bg-transparent text-[0.9375rem] font-medium text-ink outline-none"
+          className="h-10 w-full cursor-pointer bg-transparent text-base font-medium text-ink outline-none"
         >
           <option value="">{t.anyBudget}</option>
           {budgets.map((b) => (

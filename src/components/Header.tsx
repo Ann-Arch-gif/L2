@@ -45,7 +45,7 @@ function LanguageMenu({ lang, label, light }: { lang: Locale; label: string; lig
         aria-label={label}
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className={`flex h-10 items-center gap-1.5 px-2 text-sm font-semibold ${light ? "text-white" : "text-ink"}`}
+        className={`flex h-11 items-center gap-1.5 px-2 text-sm font-semibold ${light ? "text-white" : "text-ink"}`}
       >
         <Icon name="globe" size={17} />
         {localeShortLabels[lang]}
@@ -128,7 +128,7 @@ export function Header({ lang, nav, logo }: { lang: Locale; nav: Dictionary["nav
       } ${hidden && !open ? "-translate-y-full" : ""}`}
     >
       <div className="container-x flex h-20 items-center justify-between gap-6">
-        <Link href={`/${lang}`} aria-label="L2 Angkor" className="shrink-0">
+        <Link href={`/${lang}`} aria-label="L2 Angkor" className="flex min-h-11 shrink-0 items-center">
           <Logo logo={logo} light={overlay} />
         </Link>
 
@@ -139,7 +139,7 @@ export function Header({ lang, nav, logo }: { lang: Locale; nav: Dictionary["nav
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative py-2 text-[0.8125rem] font-semibold uppercase tracking-[0.12em] transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform hover:after:scale-x-100 ${
+                className={`hit relative py-2 text-[0.8125rem] font-semibold uppercase tracking-[0.12em] transition-colors after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform hover:after:scale-x-100 ${
                   overlay ? "text-white" : "text-ink"
                 } ${active ? "after:scale-x-100" : ""}`}
               >
@@ -160,7 +160,7 @@ export function Header({ lang, nav, logo }: { lang: Locale; nav: Dictionary["nav
             aria-controls="mobile-menu"
             aria-label={open ? nav.close : nav.menu}
             onClick={() => setOpen((v) => !v)}
-            className={`flex size-10 items-center justify-center lg:hidden ${overlay ? "text-white" : "text-ink"}`}
+            className={`-mr-1.5 flex size-11 items-center justify-center lg:hidden ${overlay ? "text-white" : "text-ink"}`}
           >
             <Icon name={open ? "x" : "menu"} size={24} />
           </button>

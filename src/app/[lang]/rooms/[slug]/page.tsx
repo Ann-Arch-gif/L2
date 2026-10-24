@@ -114,11 +114,11 @@ export default async function RoomPage({ params }: PageProps<"/[lang]/rooms/[slu
     <PageTransition>
       <article className="container-x pb-16 pt-8 lg:pb-24">
         <nav aria-label="Breadcrumb" className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">
-          <Link href={`/${lang}`} className="hover:text-ink">
+          <Link href={`/${lang}`} className="hit hover:text-ink">
             {t.home}
           </Link>
           <span className="mx-2">/</span>
-          <Link href={`/${lang}/rooms`} className="hover:text-ink">
+          <Link href={`/${lang}/rooms`} className="hit hover:text-ink">
             {t.allRooms}
           </Link>
           <span className="mx-2">/</span>

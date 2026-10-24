@@ -87,7 +87,7 @@ export function ContactChannels({
               aria-label={labels.close}
               onClick={() => setOpen(false)}
               autoFocus
-              className="absolute right-3 top-3 flex size-10 items-center justify-center text-muted hover:text-ink"
+              className="absolute right-2 top-2 flex size-11 items-center justify-center text-muted hover:text-ink"
             >
               <Icon name="x" size={20} />
             </button>

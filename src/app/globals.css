@@ -196,7 +196,18 @@
     color: var(--color-ink);
   }
 
+  /* Bigger invisible tap area for small text links (fingers need ~44px). */
+  .hit {
+    position: relative;
+  }
+  .hit::before {
+    content: "";
+    position: absolute;
+    inset: -12px -8px;
+  }
+
   .link-arrow {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -206,6 +217,11 @@
     color: var(--color-ink);
     border-bottom: 1px solid currentColor;
     padding-bottom: 2px;
+  }
+  .link-arrow::before {
+    content: "";
+    position: absolute;
+    inset: -12px -8px;
   }
   .link-arrow svg {
     transition: transform 0.2s;
@@ -222,7 +238,8 @@
     background: #fff;
     padding: 0.65rem 0.9rem;
     color: var(--color-ink);
-    font-size: 0.9375rem;
+    /* 16px stops iPhones from zooming in when a field is tapped. */
+    font-size: 1rem;
     transition:
       border-color var(--dur-base) var(--ease-out),
       box-shadow var(--dur-base) var(--ease-out);

@@ -220,7 +220,7 @@ export function RoomsExplorer({
       </FilterGroup>
 
       <FilterGroup title={t.availability}>
-        <div className="space-y-3">
+        <div>
           {(
             [
               ["any", t.any],
@@ -228,7 +228,7 @@ export function RoomsExplorer({
               ["by", t.availableBy],
             ] as const
           ).map(([value, label]) => (
-            <label key={value} className="flex cursor-pointer items-center gap-3 text-[0.9375rem] text-ink">
+            <label key={value} className="flex min-h-11 cursor-pointer items-center gap-3 text-[0.9375rem] text-ink">
               <input
                 type="radio"
                 name={`avail-${place}`}
@@ -284,7 +284,7 @@ export function RoomsExplorer({
           <div className="flex items-center justify-between border-b border-ink pb-4">
             <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-ink">{t.filters}</h2>
             {chips.length > 0 && (
-              <button type="button" onClick={clearAll} className="text-xs font-semibold text-muted underline hover:text-ink">
+              <button type="button" onClick={clearAll} className="hit text-xs font-semibold text-muted underline hover:text-ink">
                 {t.clear}
               </button>
             )}
@@ -314,7 +314,7 @@ export function RoomsExplorer({
             <select
               value={filters.sort}
               onChange={(e) => update({ sort: e.target.value as Sort })}
-              className="cursor-pointer bg-transparent font-semibold text-ink outline-none"
+              className="min-h-11 cursor-pointer bg-transparent text-base font-semibold text-ink outline-none"
             >
               <option value="recommended">{t.sortRecommended}</option>
               <option value="priceAsc">{t.sortPriceAsc}</option>
@@ -331,7 +331,7 @@ export function RoomsExplorer({
                 <button
                   type="button"
                   onClick={chip.remove}
-                  className="pop-in flex items-center gap-2 border border-line bg-paper px-3 py-1.5 text-sm text-ink transition-colors hover:border-ink"
+                  className="pop-in flex min-h-10 items-center gap-2 border border-line bg-paper px-3 py-1.5 text-sm text-ink transition-colors hover:border-ink"
                 >
                   {chip.label}
                   <Icon name="x" size={14} />
@@ -384,7 +384,7 @@ export function RoomsExplorer({
               type="button"
               aria-label={closeLabel}
               onClick={() => setDrawerOpen(false)}
-              className="flex size-10 items-center justify-center text-ink"
+              className="-mr-2 flex size-11 items-center justify-center text-ink"
             >
               <Icon name="x" size={22} />
             </button>
@@ -437,10 +437,10 @@ function CheckList({
 
   return (
     <div>
-      <ul className="space-y-3">
+      <ul>
         {visible.map((option) => (
           <li key={option.key}>
-            <label className="flex cursor-pointer items-center gap-3 text-[0.9375rem] text-ink">
+            <label className="flex min-h-11 cursor-pointer items-center gap-3 text-[0.9375rem] text-ink">
               <input
                 type="checkbox"
                 className="check"
@@ -457,7 +457,7 @@ function CheckList({
         <button
           type="button"
           onClick={() => setExpanded((v) => !v)}
-          className="mt-4 flex items-center gap-1 text-sm font-semibold text-ink underline underline-offset-4"
+          className="mt-1 flex min-h-11 items-center gap-1 text-sm font-semibold text-ink underline underline-offset-4"
         >
           {expanded ? lessLabel : `${moreLabel} (${options.length - VISIBLE_OPTIONS})`}
         </button>

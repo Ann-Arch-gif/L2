@@ -25,7 +25,7 @@ export default async function RoomsPage({ params }: PageProps<"/[lang]/rooms">) 
       <section className="border-b border-line bg-paper">
         <div className="container-x py-14 lg:py-20">
           <nav aria-label="Breadcrumb" className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">
-            <Link href={`/${lang}`} className="hover:text-ink">
+            <Link href={`/${lang}`} className="hit hover:text-ink">
               {dict.room.home}
             </Link>
             <span className="mx-2">/</span>

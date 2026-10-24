@@ -20,7 +20,7 @@ export function Logo({ logo, light = false }: { logo?: SanityImage | null; light
   return (
     <span className={`flex flex-col leading-none ${light ? "text-white" : "text-ink"}`}>
       <span className="font-display text-[1.6rem] font-semibold tracking-[0.14em]">L2 ANGKOR</span>
-      <span className={`mt-1 text-[0.6rem] font-semibold tracking-[0.42em] ${light ? "text-white/75" : "text-gold"}`}>
+      <span className={`mt-1 text-[0.6875rem] font-semibold tracking-[0.34em] ${light ? "text-white/75" : "text-gold"}`}>
         SIEM REAP
       </span>
     </span>

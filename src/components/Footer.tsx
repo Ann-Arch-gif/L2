@@ -33,10 +33,10 @@ export function Footer({ lang, dict, settings }: { lang: Locale; dict: Dictionar
 
         <nav aria-label={dict.footer.explore}>
           <p className="eyebrow !text-gold-light">{dict.footer.explore}</p>
-          <ul className="mt-5 space-y-3 text-sm">
+          <ul className="mt-3 text-sm">
             {links.map((link) => (
               <li key={link.href}>
-                <Link href={link.href} className="transition-colors hover:text-white">
+                <Link href={link.href} className="flex min-h-11 items-center transition-colors hover:text-white">
                   {link.label}
                 </Link>
               </li>
@@ -47,14 +47,14 @@ export function Footer({ lang, dict, settings }: { lang: Locale; dict: Dictionar
         {(channels.length > 0 || settings.wechatId) && (
           <div>
             <p className="eyebrow !text-gold-light">{dict.footer.contact}</p>
-            <ul className="mt-5 space-y-3 text-sm">
+            <ul className="mt-3 text-sm">
               {channels.map((c) => (
                 <li key={c.id}>
                   <a
                     href={c.href}
                     target={c.href.startsWith("http") ? "_blank" : undefined}
                     rel="noopener noreferrer"
-                    className="flex items-center gap-3 transition-colors hover:text-white"
+                    className="flex min-h-11 items-center gap-3 transition-colors hover:text-white"
                   >
                     <Icon name={c.icon} size={16} className="text-gold-light" />
                     {c.value}
@@ -62,7 +62,7 @@ export function Footer({ lang, dict, settings }: { lang: Locale; dict: Dictionar
                 </li>
               ))}
               {settings.wechatId && (
-                <li className="flex items-center gap-3">
+                <li className="flex min-h-11 items-center gap-3">
                   <Icon name="wechat" size={16} className="text-gold-light" />
                   {dict.contact.wechat}: {settings.wechatId}
                 </li>
@@ -76,7 +76,7 @@ export function Footer({ lang, dict, settings }: { lang: Locale; dict: Dictionar
           <p>
             © {new Date().getFullYear()} {SITE_NAME}. {dict.footer.rights}
           </p>
-          <a href="/admin" className="hover:text-white">
+          <a href="/admin" className="hit hover:text-white">
             Admin
           </a>
         </div>
