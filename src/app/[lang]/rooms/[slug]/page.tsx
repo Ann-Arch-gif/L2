@@ -105,7 +105,7 @@ export default async function RoomPage({ params }: PageProps<"/[lang]/rooms/[slu
     room.priceFrom !== null ? (
       <p className="leading-none">
         <span className="text-sm text-muted">{dict.rooms.from} </span>
-        <span className="display text-4xl">{formatPrice(room.priceFrom)}</span>
+        <span className="display text-4xl font-semibold">{formatPrice(room.priceFrom)}</span>
         <span className="text-muted"> {dict.rooms.perMonth}</span>
       </p>
     ) : null;

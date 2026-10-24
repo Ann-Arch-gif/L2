@@ -59,7 +59,7 @@ export function RoomCard({
           {room.priceFrom !== null ? (
             <p className="leading-none">
               <span className="text-xs text-muted">{t.from} </span>
-              <span className="display text-3xl">{formatPrice(room.priceFrom)}</span>
+              <span className="display text-3xl font-semibold">{formatPrice(room.priceFrom)}</span>
               <span className="text-sm text-muted"> {t.perMonth}</span>
             </p>
           ) : (
