@@ -1,4 +1,8 @@
+import type { CSSProperties } from "react";
 import type { Locale } from "./locales";
+
+// Position in a staggered sequence (read by the .reveal / .hero-rise / .stagger-in CSS).
+export const stagger = (i: number) => ({ "--i": i }) as CSSProperties;
 
 const months: Record<Exclude<Locale, "zh">, string[]> = {
   en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],

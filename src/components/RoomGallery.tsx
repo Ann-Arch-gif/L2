@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, ViewTransition } from "react";
 import { fmt } from "@/lib/format";
 import type { Dictionary } from "@/lib/i18n";
+import { roomPhotoTransition } from "@/lib/room-utils";
 import type { SanityImage as SanityImageData } from "@/sanity/types";
 import { Icon } from "./Icon";
 import { SanityImage } from "./SanityImage";
@@ -20,11 +21,13 @@ function tileClass(i: number, count: number) {
 }
 
 export function RoomGallery({
+  slug,
   photos,
   name,
   t,
   placeholder,
 }: {
+  slug: string;
   photos: Photo[];
   name: string;
   t: Dictionary["room"];
@@ -51,9 +54,11 @@ export function RoomGallery({
 
   if (count === 0) {
     return (
-      <div className="relative aspect-[16/9] bg-sand">
-        <SanityImage alt={name} placeholderLabel={placeholder} />
-      </div>
+      <ViewTransition name={roomPhotoTransition(slug)} share="morph" default="none">
+        <div className="relative aspect-[16/9] bg-sand">
+          <SanityImage alt={name} placeholderLabel={placeholder} />
+        </div>
+      </ViewTransition>
     );
   }
 
@@ -81,23 +86,33 @@ export function RoomGallery({
 
       {/* Tablets and up: grid */}
       <div className="relative hidden h-[460px] grid-cols-4 grid-rows-2 gap-2 md:grid lg:h-[540px]">
-        {tiles.map((photo, i) => (
-          <button
-            key={photo._key}
-            type="button"
-            onClick={() => setIndex(i)}
-            aria-label={fmt(t.photoOf, { i: i + 1, n: count })}
-            className={`group relative overflow-hidden bg-sand ${tileClass(i, tiles.length)}`}
-          >
-            <SanityImage
-              image={photo}
-              alt={name}
-              sizes={i === 0 ? "(min-width: 1024px) 620px, 50vw" : "(min-width: 1024px) 310px, 25vw"}
-              preload={i === 0}
-              className="img-zoom"
-            />
-          </button>
-        ))}
+        {tiles.map((photo, i) => {
+          const tile = (
+            <button
+              key={photo._key}
+              type="button"
+              onClick={() => setIndex(i)}
+              aria-label={fmt(t.photoOf, { i: i + 1, n: count })}
+              className={`group relative cursor-zoom-in overflow-hidden bg-sand ${tileClass(i, tiles.length)}`}
+            >
+              <SanityImage
+                image={photo}
+                alt={name}
+                sizes={i === 0 ? "(min-width: 1024px) 620px, 50vw" : "(min-width: 1024px) 310px, 25vw"}
+                preload={i === 0}
+                className="img-zoom"
+              />
+            </button>
+          );
+          // The main photo continues the card photo the visitor clicked on the previous page.
+          return i === 0 ? (
+            <ViewTransition key={photo._key} name={roomPhotoTransition(slug)} share="morph" default="none">
+              {tile}
+            </ViewTransition>
+          ) : (
+            tile
+          );
+        })}
         {count > 1 && (
           <button
             type="button"
@@ -111,7 +126,7 @@ export function RoomGallery({
       </div>
 
       {index !== null && (
-        <div role="dialog" aria-modal="true" aria-label={name} className="fixed inset-0 z-50 flex flex-col bg-black">
+        <div role="dialog" aria-modal="true" aria-label={name} className="fade-in fixed inset-0 z-50 flex flex-col bg-black">
           <div className="flex h-16 shrink-0 items-center justify-between px-4 text-white sm:px-6">
             <span className="text-sm">{fmt(t.photoOf, { i: index + 1, n: count })}</span>
             <button
@@ -125,8 +140,10 @@ export function RoomGallery({
             </button>
           </div>
           <div className="relative flex-1">
-            {/* Keyed so a new photo shows its blurred preview right away instead of the previous photo. */}
-            <SanityImage key={photos[index]._key} image={photos[index]} alt={name} sizes="100vw" className="!object-contain" />
+            {/* Keyed so each photo fades in fresh instead of the previous one lingering. */}
+            <div key={photos[index]._key} className="photo-in absolute inset-0">
+              <SanityImage image={photos[index]} alt={name} sizes="100vw" className="!object-contain" />
+            </div>
             {count > 1 && (
               <>
                 <button

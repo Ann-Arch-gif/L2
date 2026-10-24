@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PageTransition } from "@/components/PageTransition";
 import { RoomsExplorer } from "@/components/RoomsExplorer";
 import { getDictionary } from "@/lib/i18n";
 import { hasLocale } from "@/lib/locales";
@@ -20,7 +21,7 @@ export default async function RoomsPage({ params }: PageProps<"/[lang]/rooms">) 
   const rooms = await getRooms(lang);
 
   return (
-    <>
+    <PageTransition>
       <section className="border-b border-line bg-paper">
         <div className="container-x py-14 lg:py-20">
           <nav aria-label="Breadcrumb" className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">
@@ -43,6 +44,6 @@ export default async function RoomsPage({ params }: PageProps<"/[lang]/rooms">) 
         placeholder={dict.photoPlaceholder}
         closeLabel={dict.nav.close}
       />
-    </>
+    </PageTransition>
   );
 }

@@ -72,14 +72,14 @@ export function ContactChannels({
 
       {open && wechat && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          className="fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
           onClick={() => setOpen(false)}
         >
           <div
             role="dialog"
             aria-modal="true"
             aria-labelledby="wechat-title"
-            className="relative w-full max-w-sm bg-white p-8 text-center"
+            className="dialog-in relative w-full max-w-sm bg-white p-8 text-center"
             onClick={(e) => e.stopPropagation()}
           >
             <button

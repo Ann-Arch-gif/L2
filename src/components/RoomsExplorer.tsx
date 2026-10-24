@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { startTransition, useEffect, useMemo, useState, ViewTransition, type ReactNode } from "react";
 import { fmt, formatPrice } from "@/lib/format";
 import type { Dictionary } from "@/lib/i18n";
 import type { Locale } from "@/lib/locales";
@@ -109,17 +109,22 @@ export function RoomsExplorer({
   closeLabel: string;
 }) {
   const { lo, hi } = useMemo(() => priceBounds(rooms), [rooms]);
+  // `filters` drives the controls and updates instantly; `applied` drives the results and
+  // updates inside a transition, so the cards animate without the controls lagging.
   const [filters, setFilters] = useState<Filters>(() => readFilters(new URLSearchParams(), lo, hi));
+  const [applied, setApplied] = useState<Filters>(filters);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // The page is pre-rendered with every room; filters from the address bar apply once it loads.
   useEffect(() => {
-    setFilters(readFilters(new URLSearchParams(window.location.search), lo, hi));
+    const fromUrl = readFilters(new URLSearchParams(window.location.search), lo, hi);
+    setFilters(fromUrl);
+    setApplied(fromUrl);
   }, [lo, hi]);
 
   const furnitureOptions = useMemo(() => optionsFor(rooms, "furniture", furnitureLabels), [rooms, furnitureLabels]);
   const serviceOptions = useMemo(() => optionsFor(rooms, "services", serviceLabels), [rooms, serviceLabels]);
-  const results = useMemo(() => applyFilters(rooms, filters), [rooms, filters]);
+  const results = useMemo(() => applyFilters(rooms, applied), [rooms, applied]);
 
   useEffect(() => {
     document.body.style.overflow = drawerOpen ? "hidden" : "";
@@ -128,9 +133,13 @@ export function RoomsExplorer({
     };
   }, [drawerOpen]);
 
-  function update(patch: Partial<Filters>) {
+  // Changes run as a transition so the room cards animate into their new places.
+  // The price slider updates instantly instead, to follow the thumb while dragging.
+  function update(patch: Partial<Filters>, animate = true) {
     const next = { ...filters, ...patch };
     setFilters(next);
+    if (animate) startTransition(() => setApplied(next));
+    else setApplied(next);
     writeFilters(next, lo, hi);
   }
 
@@ -190,7 +199,7 @@ export function RoomsExplorer({
             max={hi}
             step={10}
             value={filters.min}
-            onChange={(e) => update({ min: Math.min(Number(e.target.value), filters.max - 10) })}
+            onChange={(e) => update({ min: Math.min(Number(e.target.value), filters.max - 10) }, false)}
             className="range"
           />
           <input
@@ -200,7 +209,7 @@ export function RoomsExplorer({
             max={hi}
             step={10}
             value={filters.max}
-            onChange={(e) => update({ max: Math.max(Number(e.target.value), filters.min + 10) })}
+            onChange={(e) => update({ max: Math.max(Number(e.target.value), filters.min + 10) }, false)}
             className="range"
           />
         </div>
@@ -322,7 +331,7 @@ export function RoomsExplorer({
                 <button
                   type="button"
                   onClick={chip.remove}
-                  className="flex items-center gap-2 border border-line bg-paper px-3 py-1.5 text-sm text-ink hover:border-ink"
+                  className="pop-in flex items-center gap-2 border border-line bg-paper px-3 py-1.5 text-sm text-ink transition-colors hover:border-ink"
                 >
                   {chip.label}
                   <Icon name="x" size={14} />
@@ -335,18 +344,28 @@ export function RoomsExplorer({
         {results.length > 0 ? (
           <div className="mt-8 grid gap-8 md:grid-cols-2">
             {results.map((room) => (
-              <RoomCard
+              <ViewTransition
                 key={room._id}
-                room={room}
-                lang={lang}
-                t={t}
-                placeholder={placeholder}
-                sizes="(min-width: 1024px) 460px, (min-width: 768px) 50vw, 100vw"
-              />
+                name={`card-${room._id}`}
+                enter="card"
+                exit="card"
+                update="card"
+                default="none"
+              >
+                <div className="h-full">
+                  <RoomCard
+                    room={room}
+                    lang={lang}
+                    t={t}
+                    placeholder={placeholder}
+                    sizes="(min-width: 1024px) 460px, (min-width: 768px) 50vw, 100vw"
+                  />
+                </div>
+              </ViewTransition>
             ))}
           </div>
         ) : (
-          <div className="mt-8 border border-line px-6 py-20 text-center">
+          <div className="fade-in mt-8 border border-line px-6 py-20 text-center">
             <Icon name="search" size={30} className="mx-auto text-gold" />
             <h3 className="display mt-5 text-3xl">{t.noResults}</h3>
             <p className="mx-auto mt-3 max-w-md">{t.noResultsHint}</p>
@@ -358,7 +377,7 @@ export function RoomsExplorer({
       </div>
 
       {drawerOpen && (
-        <div role="dialog" aria-modal="true" aria-label={t.filters} className="fixed inset-0 z-50 flex flex-col bg-white lg:hidden">
+        <div role="dialog" aria-modal="true" aria-label={t.filters} className="sheet-in fixed inset-0 z-50 flex flex-col bg-white lg:hidden">
           <div className="flex h-16 shrink-0 items-center justify-between border-b border-line px-5">
             <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-ink">{t.filters}</h2>
             <button

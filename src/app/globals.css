@@ -19,6 +19,16 @@
   --color-rented-bg: #eceae6;
 }
 
+/* Motion tokens: one rhythm for the whole site. */
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 160ms;
+  --dur-base: 260ms;
+  --dur-slow: 520ms;
+}
+
 @theme inline {
   --font-display: var(--font-cormorant), var(--font-khmer-serif), "Noto Serif SC", "Songti SC", "SimSun", Georgia, serif;
   --font-sans: var(--font-manrope), var(--font-kantumruy), "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
@@ -137,10 +147,23 @@
     font-size: 0.875rem;
     font-weight: 600;
     letter-spacing: 0.04em;
+    cursor: pointer;
+    touch-action: manipulation;
     transition:
-      background-color 0.2s,
-      color 0.2s,
-      border-color 0.2s;
+      background-color var(--dur-base) var(--ease-out),
+      color var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+  /* Press feedback: a slight give under the finger or cursor. */
+  .btn:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+  .btn svg {
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  .btn:hover svg:last-child:not(:first-child) {
+    transform: translateX(3px);
   }
   .btn-dark {
     background: var(--color-ink);
@@ -200,14 +223,20 @@
     padding: 0.65rem 0.9rem;
     color: var(--color-ink);
     font-size: 0.9375rem;
-    transition: border-color 0.2s;
+    transition:
+      border-color var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out);
   }
   .field::placeholder {
     color: #8b9097;
   }
+  .field:hover {
+    border-color: #c9c4bb;
+  }
   .field:focus {
     outline: none;
     border-color: var(--color-ink);
+    box-shadow: 0 0 0 3px rgb(29 33 37 / 0.08);
   }
 
   .label {
@@ -292,26 +321,209 @@
   .faq-item summary::-webkit-details-marker {
     display: none;
   }
+  /* The answer rises in as the question opens. */
+  .faq-item[open] > p {
+    animation: rise 0.45s var(--ease-out) both;
+  }
+  .faq-item summary {
+    transition: color var(--dur-base) var(--ease-out);
+  }
+  .faq-item summary:hover {
+    color: var(--color-gold);
+  }
 }
 
-/* Gentle fade-up on scroll. Only applies when JavaScript is running (html.js). */
+/* Gentle fade-up on scroll. Only applies when JavaScript is running (html.js).
+   Items in a grid set --i so they arrive one after another. */
 @layer utilities {
   .js .reveal {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(20px);
     transition:
-      opacity 0.8s ease,
-      transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+      opacity 0.9s var(--ease-out),
+      transform 0.9s var(--ease-out);
+    transition-delay: calc(var(--i, 0) * 70ms);
   }
   .js .reveal.is-visible {
     opacity: 1;
     transform: none;
   }
+
   .img-zoom {
-    transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition: transform 1.1s var(--ease-out);
   }
   .group:hover .img-zoom {
     transform: scale(1.04);
+  }
+
+  /* Room cards lift slightly on hover and give a little when pressed. */
+  .card-lift {
+    transition:
+      transform var(--dur-slow) var(--ease-out),
+      box-shadow var(--dur-slow) var(--ease-out);
+  }
+  .card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px -28px rgb(21 24 27 / 0.35);
+  }
+  .card-lift:active {
+    transform: translateY(-2px) scale(0.995);
+    transition-duration: var(--dur-fast);
+  }
+
+  /* Hero entrance: the photo settles, then the words rise in order. */
+  .hero-photo {
+    animation: hero-settle 2.2s var(--ease-out) both;
+  }
+  .hero-rise {
+    animation: rise 0.9s var(--ease-out) both;
+    animation-delay: calc(200ms + var(--i, 0) * 110ms);
+  }
+
+  /* Overlays (menus, popups, drawers) animate in from where they belong. */
+  .pop-in {
+    transform-origin: top right;
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      transform var(--dur-base) var(--ease-out);
+    @starting-style {
+      opacity: 0;
+      transform: translateY(-6px) scale(0.98);
+    }
+  }
+  .fade-in {
+    transition: opacity var(--dur-base) var(--ease-out);
+    @starting-style {
+      opacity: 0;
+    }
+  }
+  .dialog-in {
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out);
+    @starting-style {
+      opacity: 0;
+      transform: translateY(12px) scale(0.97);
+    }
+  }
+  .sheet-in {
+    transition: transform var(--dur-slow) var(--ease-out);
+    @starting-style {
+      transform: translateY(100%);
+    }
+  }
+  .drop-in {
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out);
+    @starting-style {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+  .stagger-in {
+    animation: rise 0.6s var(--ease-out) both;
+    animation-delay: calc(60ms + var(--i, 0) * 45ms);
+  }
+  .photo-in {
+    animation: fade 0.45s var(--ease-out) both;
+  }
+
+  .spinner {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 999px;
+    border: 1.5px solid currentColor;
+    border-right-color: transparent;
+    animation: spin 0.7s linear infinite;
+  }
+}
+
+@keyframes hero-settle {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Page transitions (React <ViewTransition>). The page fades out quickly and the next one
+   rises in; the header stays still. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+::view-transition-old(.page) {
+  animation: 180ms var(--ease-in) both fade-out-up;
+}
+::view-transition-new(.page) {
+  animation: 420ms var(--ease-out) 120ms both fade-in-up;
+}
+/* A room photo glides from its card into the room page (and back). */
+::view-transition-group(.morph) {
+  animation-duration: 520ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-image-pair(.morph) {
+  isolation: auto;
+}
+/* Rooms re-arranging after a filter or sort. */
+::view-transition-group(.card) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-new(.card):only-child {
+  animation: 360ms var(--ease-out) both fade-in-up;
+}
+::view-transition-old(.card):only-child {
+  animation: 160ms var(--ease-in) both fade-out-up;
+}
+
+@keyframes fade-out-up {
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  .js .reveal {
+    transform: none;
   }
 }
 

@@ -1,8 +1,9 @@
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { formatPrice } from "@/lib/format";
 import type { Dictionary } from "@/lib/i18n";
 import type { Locale } from "@/lib/locales";
-import { roomFacts, roomStatus } from "@/lib/room-utils";
+import { roomFacts, roomPhotoTransition, roomStatus } from "@/lib/room-utils";
 import type { RoomCardData } from "@/sanity/types";
 import { Icon } from "./Icon";
 import { SanityImage } from "./SanityImage";
@@ -26,23 +27,26 @@ export function RoomCard({
   const facts = roomFacts(room, t);
 
   return (
-    <Link href={`/${lang}/rooms/${room.slug}`} className="group flex h-full flex-col bg-white">
-      <div className="relative aspect-[4/3] overflow-hidden bg-sand">
-        <SanityImage
-          image={room.photo}
-          alt={name}
-          sizes={sizes}
-          placeholderLabel={placeholder}
-          className={`img-zoom ${room.status === "rented" ? "grayscale-[35%]" : ""}`}
-        />
-        <StatusBadge tone={status.tone} label={status.label} className="absolute left-4 top-4 shadow-sm" />
-        {(room.photoCount ?? 0) > 1 && (
-          <span className="absolute bottom-4 right-4 flex items-center gap-1.5 bg-black/55 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm">
-            <Icon name="camera" size={13} />
-            {room.photoCount}
-          </span>
-        )}
-      </div>
+    <Link href={`/${lang}/rooms/${room.slug}`} className="card-lift group flex h-full flex-col bg-white">
+      {/* Same name as the room page's main photo, so the photo glides between the two pages. */}
+      <ViewTransition name={roomPhotoTransition(room.slug)} share="morph" default="none">
+        <div className="relative aspect-[4/3] overflow-hidden bg-sand">
+          <SanityImage
+            image={room.photo}
+            alt={name}
+            sizes={sizes}
+            placeholderLabel={placeholder}
+            className={`img-zoom ${room.status === "rented" ? "grayscale-[35%]" : ""}`}
+          />
+          <StatusBadge tone={status.tone} label={status.label} className="absolute left-4 top-4 shadow-sm" />
+          {(room.photoCount ?? 0) > 1 && (
+            <span className="absolute bottom-4 right-4 flex items-center gap-1.5 bg-black/55 px-2 py-1 text-xs font-medium text-white backdrop-blur-sm">
+              <Icon name="camera" size={13} />
+              {room.photoCount}
+            </span>
+          )}
+        </div>
+      </ViewTransition>
 
       <div className="flex flex-1 flex-col border-x border-b border-line px-6 pb-6 pt-5">
         {facts.length > 0 && (

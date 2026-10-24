@@ -6,6 +6,9 @@ import type { Locale } from "./locales";
 
 type RoomLabels = Dictionary["rooms"];
 
+// Shared view-transition name linking a room's card photo and its room page photo.
+export const roomPhotoTransition = (slug: string) => `room-photo-${slug}`;
+
 export type StatusTone = "available" | "soon" | "rented";
 
 export function roomStatus(room: Pick<RoomCardData, "status" | "availableFrom">, t: RoomLabels, lang: Locale) {

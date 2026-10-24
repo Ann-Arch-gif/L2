@@ -56,7 +56,7 @@ export function InquiryForm({
 
   if (status === "success") {
     return (
-      <div role="status" className="flex min-h-[26rem] flex-col items-center justify-center border border-line p-10 text-center">
+      <div role="status" className="dialog-in flex min-h-[26rem] flex-col items-center justify-center border border-line p-10 text-center">
         <span className="flex size-14 items-center justify-center rounded-full border border-gold text-gold">
           <Icon name="check" size={26} />
         </span>
@@ -119,13 +119,13 @@ export function InquiryForm({
       </Field>
 
       <div className="flex flex-col-reverse gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
-        <p aria-live="polite" className="text-sm text-[#a2341f]">
+        <p aria-live="polite" key={status} className="fade-in text-sm text-[#a2341f]">
           {status === "invalid" && labels.invalid}
           {status === "error" && labels.error}
         </p>
-        <button type="submit" disabled={status === "sending"} className="btn btn-dark disabled:opacity-60">
+        <button type="submit" disabled={status === "sending"} aria-busy={status === "sending"} className="btn btn-dark disabled:cursor-wait disabled:opacity-80">
           {status === "sending" ? labels.sending : labels.submit}
-          <Icon name="arrowRight" size={16} />
+          {status === "sending" ? <span className="spinner" aria-hidden="true" /> : <Icon name="arrowRight" size={16} />}
         </button>
       </div>
     </form>

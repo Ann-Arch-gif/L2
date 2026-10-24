@@ -1,4 +1,4 @@
-import { fmt, formatPrice } from "@/lib/format";
+import { fmt, formatPrice, stagger } from "@/lib/format";
 import type { Dictionary } from "@/lib/i18n";
 import type { Locale } from "@/lib/locales";
 import type { RoomCardData, SiteSettings } from "@/sanity/types";
@@ -48,15 +48,23 @@ export function Hero({
   return (
     <>
       <section className="relative flex min-h-[640px] items-end bg-night h-[92svh]">
-        <SanityImage image={settings.heroImage} alt={hero.title} preload sizes="100vw" />
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="hero-photo absolute inset-0">
+            <SanityImage image={settings.heroImage} alt={hero.title} preload sizes="100vw" />
+          </div>
+        </div>
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/35" />
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/10 to-transparent" />
 
         <div className="container-x relative pb-14 pt-32 sm:pb-20">
-          <p className="eyebrow !text-white/90">{hero.eyebrow}</p>
-          <h1 className="display mt-5 max-w-3xl text-5xl !text-white sm:text-7xl lg:text-[5.5rem]">{hero.title}</h1>
-          <p className="mt-5 max-w-xl text-lg text-white/85">{hero.subtitle}</p>
-          <div className="mt-10">
+          <p className="hero-rise eyebrow !text-white/90">{hero.eyebrow}</p>
+          <h1 className="hero-rise display mt-5 max-w-3xl text-5xl !text-white sm:text-7xl lg:text-[5.5rem]" style={stagger(1)}>
+            {hero.title}
+          </h1>
+          <p className="hero-rise mt-5 max-w-xl text-lg text-white/85" style={stagger(2)}>
+            {hero.subtitle}
+          </p>
+          <div className="hero-rise mt-10" style={stagger(3)}>
             <HeroSearch lang={lang} t={hero} budgets={budgetSteps(prices)} />
           </div>
         </div>
@@ -67,7 +75,8 @@ export function Hero({
           {items.map((item, i) => (
             <li
               key={item.label}
-              className={`flex items-center gap-4 py-7 lg:py-9 ${i % 2 ? "pl-4 sm:pl-8" : ""} ${
+              style={stagger(i)}
+              className={`reveal flex items-center gap-4 py-7 lg:py-9 ${i % 2 ? "pl-4 sm:pl-8" : ""} ${
                 i > 0 ? "lg:border-l lg:border-line lg:pl-8" : ""
               } ${i < 2 ? "border-b border-line lg:border-b-0" : ""}`}
             >

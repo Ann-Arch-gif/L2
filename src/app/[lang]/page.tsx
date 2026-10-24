@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PageTransition } from "@/components/PageTransition";
 import { About } from "@/components/About";
 import { Contact } from "@/components/Contact";
 import { Gallery } from "@/components/Gallery";
@@ -12,6 +13,7 @@ import { RoomCard } from "@/components/RoomCard";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Services } from "@/components/Services";
 import { TermsFaq } from "@/components/TermsFaq";
+import { stagger } from "@/lib/format";
 import { getDictionary } from "@/lib/i18n";
 import { hasLocale } from "@/lib/locales";
 import { byAvailability } from "@/lib/room-utils";
@@ -27,7 +29,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
   const featured = [...rooms.filter((r) => r.featured), ...[...rooms].sort(byAvailability).filter((r) => !r.featured)].slice(0, 3);
 
   return (
-    <>
+    <PageTransition>
       <Hero lang={lang} dict={dict} settings={settings} rooms={rooms} />
 
       {featured.length > 0 && (
@@ -44,8 +46,8 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
               }
             />
             <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {featured.map((room) => (
-                <div key={room._id} className="reveal">
+              {featured.map((room, i) => (
+                <div key={room._id} className="reveal" style={stagger(i)}>
                   <RoomCard room={room} lang={lang} t={dict.rooms} placeholder={dict.photoPlaceholder} />
                 </div>
               ))}
@@ -62,6 +64,6 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
       <Payment dict={dict} settings={settings} />
       <Location lang={lang} dict={dict} settings={settings} />
       <Contact lang={lang} dict={dict} settings={settings} rooms={rooms} />
-    </>
+    </PageTransition>
   );
 }

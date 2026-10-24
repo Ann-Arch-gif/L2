@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { stagger } from "@/lib/format";
 import type { Dictionary } from "@/lib/i18n";
 import { LOCALE_COOKIE, localeLabels, localeShortLabels, locales, type Locale } from "@/lib/locales";
 import type { SanityImage } from "@/sanity/types";
@@ -51,7 +52,7 @@ function LanguageMenu({ lang, label, light }: { lang: Locale; label: string; lig
         <Icon name="chevronDown" size={14} />
       </button>
       {open && (
-        <ul className="absolute right-0 top-full z-50 mt-2 min-w-40 border border-line bg-white py-1 shadow-[0_18px_40px_-18px_rgba(0,0,0,0.3)]">
+        <ul className="pop-in absolute right-0 top-full z-50 mt-2 min-w-40 border border-line bg-white py-1 shadow-[0_18px_40px_-18px_rgba(0,0,0,0.3)]">
           {locales.map((locale) => (
             <li key={locale}>
               <Link
@@ -63,7 +64,7 @@ function LanguageMenu({ lang, label, light }: { lang: Locale; label: string; lig
                   rememberLocale(locale);
                   setOpen(false);
                 }}
-                className="flex items-center justify-between gap-4 px-4 py-2.5 text-sm text-ink hover:bg-paper"
+                className="flex items-center justify-between gap-4 px-4 py-2.5 text-sm text-ink transition-colors hover:bg-paper"
               >
                 {localeLabels[locale]}
                 {locale === lang && <Icon name="check" size={15} />}
@@ -82,10 +83,20 @@ export function Header({ lang, nav, logo }: { lang: Locale; nav: Dictionary["nav
   const isHome = pathname === `/${lang}`;
   const isRoomPage = pathname?.startsWith(`/${lang}/rooms/`) ?? false;
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
 
+  // Solid background once the page moves; tucks away while scrolling down, returns on scroll up.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 40);
+      if (Math.abs(y - lastY) > 6) {
+        setHidden(y > lastY && y > 240);
+        lastY = y;
+      }
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -112,9 +123,9 @@ export function Header({ lang, nav, logo }: { lang: Locale; nav: Dictionary["nav
 
   return (
     <header
-      className={`${isHome ? "fixed" : "sticky"} inset-x-0 top-0 z-40 transition-[background-color,border-color,color] duration-300 ${
+      className={`${isHome ? "fixed" : "sticky"} inset-x-0 top-0 z-40 transition-[background-color,border-color,color,transform] duration-500 ease-[var(--ease-out)] ${
         overlay ? "border-b border-white/15 bg-transparent" : "border-b border-line bg-white"
-      }`}
+      } ${hidden && !open ? "-translate-y-full" : ""}`}
     >
       <div className="container-x flex h-20 items-center justify-between gap-6">
         <Link href={`/${lang}`} aria-label="L2 Angkor" className="shrink-0">
@@ -157,29 +168,30 @@ export function Header({ lang, nav, logo }: { lang: Locale; nav: Dictionary["nav
       </div>
 
       {open && (
-        <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-20 z-40 overflow-y-auto bg-white lg:hidden">
+        <div id="mobile-menu" className="drop-in fixed inset-x-0 bottom-0 top-20 z-40 overflow-y-auto bg-white lg:hidden">
           <nav aria-label={nav.menu} className="container-x flex flex-col py-6">
-            <Link href={`/${lang}`} className="display border-b border-line py-4 text-3xl">
+            <Link href={`/${lang}`} className="stagger-in display border-b border-line py-4 text-3xl">
               {nav.home}
             </Link>
-            {links.map((link) => (
+            {links.map((link, i) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="display border-b border-line py-4 text-3xl"
+                style={stagger(i + 1)}
+                className="stagger-in display border-b border-line py-4 text-3xl"
               >
                 {link.label}
               </Link>
             ))}
-            <div className="mt-8 flex flex-wrap gap-2">
+            <div className="stagger-in mt-8 flex flex-wrap gap-2" style={stagger(links.length + 1)}>
               {locales.map((locale) => (
                 <Link
                   key={locale}
                   href={hrefFor(locale)}
                   lang={locale}
                   onClick={() => rememberLocale(locale)}
-                  className={`border px-4 py-2 text-sm font-semibold ${
+                  className={`border px-4 py-2 text-sm font-semibold transition-colors ${
                     locale === lang ? "border-ink bg-ink text-white" : "border-line text-ink"
                   }`}
                 >

@@ -1,3 +1,4 @@
+import { stagger } from "@/lib/format";
 import type { Dictionary } from "@/lib/i18n";
 import type { SiteSettings } from "@/sanity/types";
 import { SanityImage } from "./SanityImage";
@@ -23,6 +24,7 @@ export function Gallery({ dict, settings }: { dict: Dictionary; settings: SiteSe
           {photos.map((photo, i) => (
             <figure
               key={photo._key}
+              style={stagger(i % 3)}
               className={`reveal group relative overflow-hidden bg-sand ${spanFor(i, photos.length)}`}
             >
               <SanityImage

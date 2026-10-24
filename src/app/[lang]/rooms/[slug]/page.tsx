@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { PageTransition } from "@/components/PageTransition";
 import { Contact } from "@/components/Contact";
 import { Icon, type IconName } from "@/components/Icon";
 import { RoomCard } from "@/components/RoomCard";
@@ -8,7 +9,7 @@ import { RoomGallery } from "@/components/RoomGallery";
 import { StatusBadge } from "@/components/StatusBadge";
 import { leaseTerms } from "@/components/TermsFaq";
 import { getChannels } from "@/lib/channels";
-import { fmt, formatPrice } from "@/lib/format";
+import { fmt, formatPrice, stagger } from "@/lib/format";
 import { getDictionary } from "@/lib/i18n";
 import { hasLocale } from "@/lib/locales";
 import {
@@ -110,7 +111,7 @@ export default async function RoomPage({ params }: PageProps<"/[lang]/rooms/[slu
     ) : null;
 
   return (
-    <>
+    <PageTransition>
       <article className="container-x pb-16 pt-8 lg:pb-24">
         <nav aria-label="Breadcrumb" className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">
           <Link href={`/${lang}`} className="hover:text-ink">
@@ -131,7 +132,7 @@ export default async function RoomPage({ params }: PageProps<"/[lang]/rooms/[slu
         </header>
 
         <div className="mt-8">
-          <RoomGallery photos={room.photos ?? []} name={name} t={t} placeholder={dict.photoPlaceholder} />
+          <RoomGallery slug={room.slug} photos={room.photos ?? []} name={name} t={t} placeholder={dict.photoPlaceholder} />
         </div>
 
         <div className="mt-12 grid gap-14 lg:grid-cols-[1fr_380px] lg:gap-20">
@@ -233,8 +234,10 @@ export default async function RoomPage({ params }: PageProps<"/[lang]/rooms/[slu
           <div className="container-x">
             <h2 className="display text-4xl">{t.otherRooms}</h2>
             <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {others.map((r) => (
-                <RoomCard key={r._id} room={r} lang={lang} t={dict.rooms} placeholder={dict.photoPlaceholder} />
+              {others.map((r, i) => (
+                <div key={r._id} className="reveal" style={stagger(i)}>
+                  <RoomCard room={r} lang={lang} t={dict.rooms} placeholder={dict.photoPlaceholder} />
+                </div>
               ))}
             </div>
           </div>
@@ -251,6 +254,6 @@ export default async function RoomPage({ params }: PageProps<"/[lang]/rooms/[slu
           {t.enquireShort}
         </a>
       </div>
-    </>
+    </PageTransition>
   );
 }
