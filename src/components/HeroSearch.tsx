@@ -6,15 +6,18 @@ import { fmt, formatPrice } from "@/lib/format";
 import type { Dictionary } from "@/lib/i18n";
 import type { Locale } from "@/lib/locales";
 import { Icon } from "./Icon";
+import { DatePicker, Select } from "./Pickers";
 
 // Quick search on the home page; opens the Rooms page with the filters filled in.
 export function HeroSearch({
   lang,
   t,
+  picker,
   budgets,
 }: {
   lang: Locale;
   t: Dictionary["hero"];
+  picker: Dictionary["picker"];
   budgets: number[];
 }) {
   const router = useRouter();
@@ -38,30 +41,31 @@ export function HeroSearch({
       onSubmit={onSubmit}
       className="grid w-full max-w-3xl gap-px bg-line shadow-[0_30px_60px_-30px_rgba(0,0,0,0.6)] sm:grid-cols-[1fr_1fr_auto]"
     >
-      <label className="block cursor-pointer bg-white px-5 py-2">
+      <div className="bg-white px-5 py-2">
         <span className="label !mb-0.5 !text-xs !text-muted">{t.moveIn}</span>
-        <input
-          type="date"
+        <DatePicker
+          variant="bare"
           value={moveIn}
-          onChange={(e) => setMoveIn(e.target.value)}
-          className="h-10 w-full cursor-pointer bg-transparent text-base font-medium text-ink outline-none"
+          onChange={setMoveIn}
+          lang={lang}
+          labels={picker}
+          placeholder={picker.anyDate}
+          ariaLabel={t.moveIn}
         />
-      </label>
-      <label className="block cursor-pointer bg-white px-5 py-2">
+      </div>
+      <div className="bg-white px-5 py-2">
         <span className="label !mb-0.5 !text-xs !text-muted">{t.budget}</span>
-        <select
+        <Select
+          variant="bare"
           value={max}
-          onChange={(e) => setMax(e.target.value)}
-          className="h-10 w-full cursor-pointer bg-transparent text-base font-medium text-ink outline-none"
-        >
-          <option value="">{t.anyBudget}</option>
-          {budgets.map((b) => (
-            <option key={b} value={b}>
-              {fmt(t.upTo, { price: formatPrice(b) })}
-            </option>
-          ))}
-        </select>
-      </label>
+          onChange={setMax}
+          ariaLabel={t.budget}
+          options={[
+            { value: "", label: t.anyBudget },
+            ...budgets.map((b) => ({ value: String(b), label: fmt(t.upTo, { price: formatPrice(b) }) })),
+          ]}
+        />
+      </div>
       <button type="submit" className="btn btn-dark h-full min-h-14 rounded-none px-8">
         <Icon name="search" size={18} />
         {t.search}

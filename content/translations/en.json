@@ -275,5 +275,13 @@
     "text": "Sorry, we couldn't find that page.",
     "home": "Back to home"
   },
-  "photoPlaceholder": "Photo coming soon"
+  "photoPlaceholder": "Photo coming soon",
+  "picker": {
+    "anyDate": "Any date",
+    "selectDate": "Select a date",
+    "clear": "Clear",
+    "today": "Today",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month"
+  }
 }

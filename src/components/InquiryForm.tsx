@@ -4,6 +4,7 @@ import { useState, type FormEvent, type ReactNode } from "react";
 import type { Dictionary } from "@/lib/i18n";
 import type { Locale } from "@/lib/locales";
 import { Icon } from "./Icon";
+import { DatePicker, Select } from "./Pickers";
 
 type Status = "idle" | "sending" | "success" | "error" | "invalid";
 
@@ -12,17 +13,22 @@ const fill = (template: string, n: number) => template.replace("{n}", String(n))
 export function InquiryForm({
   lang,
   labels,
+  picker,
   rooms,
   defaultRoom = "",
   minLeaseMonths,
 }: {
   lang: Locale;
   labels: Dictionary["form"];
+  picker: Dictionary["picker"];
   rooms: { slug: string; name: string }[];
   defaultRoom?: string;
   minLeaseMonths: number;
 }) {
   const [status, setStatus] = useState<Status>("idle");
+  const [room, setRoom] = useState(defaultRoom);
+  const [moveIn, setMoveIn] = useState("");
+  const [lease, setLease] = useState("");
 
   const leaseOptions = Array.from(new Set([minLeaseMonths, 6, 12]))
     .filter((n) => n >= minLeaseMonths)
@@ -48,6 +54,9 @@ export function InquiryForm({
       });
       if (!res.ok) throw new Error(String(res.status));
       form.reset();
+      setRoom(defaultRoom);
+      setMoveIn("");
+      setLease("");
       setStatus("success");
     } catch {
       setStatus("error");
@@ -83,29 +92,38 @@ export function InquiryForm({
       <Field label={labels.phone} optional={labels.optional}>
         <input name="phone" type="tel" autoComplete="tel" maxLength={50} className="field" />
       </Field>
-      <Field label={labels.room} optional={labels.optional}>
-        <select name="room" defaultValue={defaultRoom} className="field">
-          <option value="">{labels.anyRoom}</option>
-          {rooms.map((r) => (
-            <option key={r.slug} value={r.slug}>
-              {r.name}
-            </option>
-          ))}
-        </select>
+      <Field label={labels.room} optional={labels.optional} custom>
+        <Select
+          name="room"
+          value={room}
+          onChange={setRoom}
+          ariaLabel={labels.room}
+          options={[{ value: "", label: labels.anyRoom }, ...rooms.map((r) => ({ value: r.slug, label: r.name }))]}
+        />
       </Field>
-      <Field label={labels.moveIn} optional={labels.optional}>
-        <input name="moveIn" type="date" className="field" />
+      <Field label={labels.moveIn} optional={labels.optional} custom>
+        <DatePicker
+          name="moveIn"
+          value={moveIn}
+          onChange={setMoveIn}
+          lang={lang}
+          labels={picker}
+          placeholder={picker.selectDate}
+          ariaLabel={labels.moveIn}
+        />
       </Field>
-      <Field label={labels.lease} optional={labels.optional}>
-        <select name="lease" defaultValue="" className="field">
-          <option value="">—</option>
-          {leaseOptions.map((n) => (
-            <option key={n} value={`${n} months`}>
-              {fill(labels.monthsOption, n)}
-            </option>
-          ))}
-          <option value="12+ months">{labels.longerOption}</option>
-        </select>
+      <Field label={labels.lease} optional={labels.optional} custom>
+        <Select
+          name="lease"
+          value={lease}
+          onChange={setLease}
+          ariaLabel={labels.lease}
+          options={[
+            { value: "", label: "—" },
+            ...leaseOptions.map((n) => ({ value: `${n} months`, label: fill(labels.monthsOption, n) })),
+            { value: "12+ months", label: labels.longerOption },
+          ]}
+        />
       </Field>
       <Field label={labels.message} className="sm:col-span-2">
         <textarea
@@ -132,24 +150,29 @@ export function InquiryForm({
   );
 }
 
+// Native inputs sit inside a <label>; custom pickers (which name themselves) use a plain wrapper,
+// because a <label> would re-open them when an option inside is clicked.
 function Field({
   label,
   optional,
+  custom = false,
   className = "",
   children,
 }: {
   label: string;
   optional?: string;
+  custom?: boolean;
   className?: string;
   children: ReactNode;
 }) {
+  const Wrapper = custom ? "div" : "label";
   return (
-    <label className={`block ${className}`}>
+    <Wrapper className={`block ${className}`}>
       <span className="label">
         {label}
         {optional && <span className="ml-1.5 font-normal normal-case tracking-normal text-muted">({optional})</span>}
       </span>
       {children}
-    </label>
+    </Wrapper>
   );
 }

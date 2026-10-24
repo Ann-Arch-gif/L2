@@ -38,6 +38,7 @@ export function Contact({
           <InquiryForm
             lang={lang}
             labels={dict.form}
+            picker={dict.picker}
             rooms={rooms.map((r) => ({ slug: r.slug, name: r.name ?? r.slug }))}
             defaultRoom={defaultRoom}
             minLeaseMonths={settings.minLeaseMonths ?? 3}

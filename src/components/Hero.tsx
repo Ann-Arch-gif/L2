@@ -47,7 +47,8 @@ export function Hero({
 
   return (
     <>
-      <section className="relative flex min-h-[640px] items-end bg-night h-[92svh]">
+      {/* z-20 keeps the search box menus above the sections that follow. */}
+      <section className="relative z-20 flex min-h-[640px] items-end bg-night h-[92svh]">
         <div className="absolute inset-0 overflow-hidden">
           <div className="hero-photo absolute inset-0">
             <SanityImage image={settings.heroImage} alt={hero.title} preload sizes="100vw" />
@@ -65,7 +66,7 @@ export function Hero({
             {hero.subtitle}
           </p>
           <div className="hero-rise mt-10" style={stagger(3)}>
-            <HeroSearch lang={lang} t={hero} budgets={budgetSteps(prices)} />
+            <HeroSearch lang={lang} t={hero} picker={dict.picker} budgets={budgetSteps(prices)} />
           </div>
         </div>
       </section>

@@ -43,6 +43,7 @@ export default async function RoomsPage({ params }: PageProps<"/[lang]/rooms">) 
         serviceLabels={dict.serviceItems}
         placeholder={dict.photoPlaceholder}
         closeLabel={dict.nav.close}
+        picker={dict.picker}
       />
     </PageTransition>
   );

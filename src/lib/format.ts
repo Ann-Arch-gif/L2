@@ -16,6 +16,10 @@ export function fmt(template: string, vars: Record<string, string | number>): st
   );
 }
 
+export function monthName(month: number, locale: Locale): string {
+  return locale === "zh" ? `${month}月` : months[locale][month - 1];
+}
+
 // Formats "2026-12-01" by hand: Intl output for Khmer differs between Node and browsers,
 // which would make the server and browser render different text.
 export function formatDate(iso: string, locale: Locale): string {

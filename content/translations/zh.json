@@ -275,5 +275,13 @@
     "text": "抱歉，找不到该页面。",
     "home": "返回首页"
   },
-  "photoPlaceholder": "照片即将上传"
+  "photoPlaceholder": "照片即将上传",
+  "picker": {
+    "anyDate": "任意日期",
+    "selectDate": "选择日期",
+    "clear": "清除",
+    "today": "今天",
+    "prevMonth": "上个月",
+    "nextMonth": "下个月"
+  }
 }

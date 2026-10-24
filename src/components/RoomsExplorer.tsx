@@ -7,6 +7,7 @@ import type { Locale } from "@/lib/locales";
 import { availableBy, byAvailability, featureLabel } from "@/lib/room-utils";
 import type { RoomCardData } from "@/sanity/types";
 import { Icon } from "./Icon";
+import { DatePicker, Select } from "./Pickers";
 import { RoomCard } from "./RoomCard";
 
 type Availability = "any" | "now" | "by";
@@ -99,6 +100,7 @@ export function RoomsExplorer({
   serviceLabels,
   placeholder,
   closeLabel,
+  picker,
 }: {
   lang: Locale;
   rooms: RoomCardData[];
@@ -107,6 +109,7 @@ export function RoomsExplorer({
   serviceLabels: Record<string, string>;
   placeholder: string;
   closeLabel: string;
+  picker: Dictionary["picker"];
 }) {
   const { lo, hi } = useMemo(() => priceBounds(rooms), [rooms]);
   // `filters` drives the controls and updates instantly; `applied` drives the results and
@@ -240,13 +243,16 @@ export function RoomsExplorer({
             </label>
           ))}
           {filters.avail === "by" && (
-            <input
-              type="date"
-              aria-label={t.availableBy}
-              value={filters.date}
-              onChange={(e) => update({ date: e.target.value })}
-              className="field mt-1"
-            />
+            <div className="mt-1">
+              <DatePicker
+                value={filters.date}
+                onChange={(date) => update({ date })}
+                lang={lang}
+                labels={picker}
+                placeholder={picker.selectDate}
+                ariaLabel={t.availableBy}
+              />
+            </div>
           )}
         </div>
       </FilterGroup>
@@ -279,7 +285,7 @@ export function RoomsExplorer({
 
   return (
     <div className="container-x grid gap-10 pb-24 pt-10 lg:grid-cols-[280px_1fr] lg:gap-14">
-      <aside className="hidden lg:block">
+      <aside className="relative z-10 hidden lg:block">
         <div className="sticky top-28">
           <div className="flex items-center justify-between border-b border-ink pb-4">
             <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-ink">{t.filters}</h2>
@@ -309,19 +315,23 @@ export function RoomsExplorer({
               {countLabel}
             </p>
           </div>
-          <label className="flex items-center gap-2 text-sm">
+          <div className="flex items-center gap-2 text-sm">
             <span className="text-muted">{t.sort}</span>
-            <select
+            <Select
+              variant="bare"
+              align="right"
               value={filters.sort}
-              onChange={(e) => update({ sort: e.target.value as Sort })}
-              className="min-h-11 cursor-pointer bg-transparent text-base font-semibold text-ink outline-none"
-            >
-              <option value="recommended">{t.sortRecommended}</option>
-              <option value="priceAsc">{t.sortPriceAsc}</option>
-              <option value="priceDesc">{t.sortPriceDesc}</option>
-              <option value="size">{t.sortSize}</option>
-            </select>
-          </label>
+              onChange={(sort) => update({ sort: sort as Sort })}
+              ariaLabel={t.sort}
+              className="[&>button]:!h-11 [&>button]:font-semibold"
+              options={[
+                { value: "recommended", label: t.sortRecommended },
+                { value: "priceAsc", label: t.sortPriceAsc },
+                { value: "priceDesc", label: t.sortPriceDesc },
+                { value: "size", label: t.sortSize },
+              ]}
+            />
+          </div>
         </div>
 
         {chips.length > 0 && (
