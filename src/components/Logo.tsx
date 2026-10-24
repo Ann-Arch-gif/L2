@@ -1,27 +1,27 @@
 import Image from "next/image";
+import { urlFor } from "@/sanity/image";
+import type { SanityImage } from "@/sanity/types";
+import { SITE_NAME } from "@/lib/site";
 
-// Uses the logo image from site.json when set, otherwise a simple temple-mark wordmark.
-export function Logo({ name, logo, light = false }: { name: string; logo?: string; light?: boolean }) {
-  if (logo) {
+// Uses the logo uploaded in the admin, otherwise a text wordmark.
+export function Logo({ logo, light = false }: { logo?: SanityImage | null; light?: boolean }) {
+  if (logo?.asset) {
     return (
-      <Image src={logo} alt={name} width={160} height={48} className="h-10 w-auto object-contain" />
+      <Image
+        src={urlFor(logo).height(96).url()}
+        alt={SITE_NAME}
+        width={Math.round(48 * ((logo.asset.width ?? 160) / (logo.asset.height ?? 48)))}
+        height={48}
+        className={`h-11 w-auto object-contain ${light ? "brightness-0 invert" : ""}`}
+      />
     );
   }
 
   return (
-    <span className="flex items-center gap-2.5">
-      <svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true">
-        <rect width="40" height="40" rx="11" fill={light ? "#faf7f2" : "#9a4f2c"} />
-        <path
-          d="M20 7c2.2 4 3.6 6.6 3.6 9.4v1.4h2.1v3h1.8V31h-15V20.8h1.8v-3h2.1v-1.4C16.4 13.6 17.8 11 20 7Z"
-          fill={light ? "#9a4f2c" : "#faf7f2"}
-        />
-        <path d="M10 31h20" stroke={light ? "#9a4f2c" : "#faf7f2"} strokeWidth="2" strokeLinecap="round" />
-      </svg>
-      <span
-        className={`font-display text-xl font-semibold tracking-tight ${light ? "text-linen" : "text-ink"}`}
-      >
-        {name}
+    <span className={`flex flex-col leading-none ${light ? "text-white" : "text-ink"}`}>
+      <span className="font-display text-[1.6rem] font-semibold tracking-[0.14em]">L2 ANGKOR</span>
+      <span className={`mt-1 text-[0.6rem] font-semibold tracking-[0.42em] ${light ? "text-white/75" : "text-gold"}`}>
+        SIEM REAP
       </span>
     </span>
   );

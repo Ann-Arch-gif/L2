@@ -20,17 +20,11 @@ export const localeShortLabels: Record<Locale, string> = {
   zh: "中文",
 };
 
-// Values for <html lang> and Intl formatting.
+// Values for <html lang>.
 export const htmlLang: Record<Locale, string> = {
   en: "en",
   km: "km",
   zh: "zh-Hans",
-};
-
-export const intlLocale: Record<Locale, string> = {
-  en: "en-GB",
-  km: "km-KH",
-  zh: "zh-CN",
 };
 
 export function hasLocale(value: string): value is Locale {

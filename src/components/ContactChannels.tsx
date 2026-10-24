@@ -1,28 +1,21 @@
 "use client";
 
 import Image from "next/image";
-import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useState } from "react";
-import { Icon, type IconName } from "./Icon";
-
-export interface Channel {
-  id: string;
-  icon: IconName;
-  label: string;
-  value: string;
-  href?: string;
-}
+import type { Channel } from "@/lib/channels";
+import type { Dictionary } from "@/lib/i18n";
+import { urlFor } from "@/sanity/image";
+import type { SanityImage } from "@/sanity/types";
+import { Icon } from "./Icon";
 
 export function ContactChannels({
-  title,
   channels,
   wechat,
   labels,
 }: {
-  title: string;
   channels: Channel[];
-  wechat?: { id: string; qr?: string };
-  labels: { wechat: string; wechatTitle: string; wechatScan: string; copy: string; copied: string; close: string };
+  wechat?: { id: string; qr?: SanityImage | null };
+  labels: Dictionary["contact"];
 }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -45,100 +38,82 @@ export function ContactChannels({
     }
   }
 
-  if (channels.length === 0 && !wechat) return null;
+  const row = "group flex w-full items-center gap-4 border-b border-line py-4 text-left";
 
   return (
     <div>
-      <h3 className="font-display text-xl font-semibold text-ink">{title}</h3>
-      <ul className="mt-5 grid gap-3">
+      <p className="eyebrow">{labels.channels}</p>
+      <ul className="mt-4 border-t border-line">
         {channels.map((c) => (
           <li key={c.id}>
-            <a
-              href={c.href}
-              target={c.href?.startsWith("http") ? "_blank" : undefined}
-              rel="noopener noreferrer"
-              className="channel group"
-            >
-              <span className="channel-icon">
-                <Icon name={c.icon} size={20} />
+            <a href={c.href} target={c.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className={row}>
+              <Icon name={c.icon} size={20} className="shrink-0 text-gold" />
+              <span className="min-w-0 flex-1">
+                <span className="block text-xs font-semibold uppercase tracking-[0.12em] text-muted">{c.label}</span>
+                <span className="block truncate text-ink">{c.value}</span>
               </span>
-              <span className="min-w-0">
-                <span className="block text-sm font-semibold text-ink">{c.label}</span>
-                <span className="block truncate text-sm text-muted">{c.value}</span>
-              </span>
-              <Icon name="arrowRight" size={16} className="ml-auto shrink-0 text-terracotta transition-transform group-hover:translate-x-1" />
+              <Icon name="arrowRight" size={16} className="shrink-0 text-ink transition-transform group-hover:translate-x-1" />
             </a>
           </li>
         ))}
         {wechat && (
           <li>
-            <button type="button" className="channel group w-full text-left" onClick={() => setOpen(true)}>
-              <span className="channel-icon">
-                <Icon name="wechat" size={20} />
+            <button type="button" className={row} onClick={() => setOpen(true)}>
+              <Icon name="wechat" size={20} className="shrink-0 text-gold" />
+              <span className="min-w-0 flex-1">
+                <span className="block text-xs font-semibold uppercase tracking-[0.12em] text-muted">{labels.wechat}</span>
+                <span className="block truncate text-ink">{wechat.id}</span>
               </span>
-              <span className="min-w-0">
-                <span className="block text-sm font-semibold text-ink">{labels.wechat}</span>
-                <span className="block truncate text-sm text-muted">{wechat.id}</span>
-              </span>
-              <Icon name="arrowRight" size={16} className="ml-auto shrink-0 text-terracotta transition-transform group-hover:translate-x-1" />
+              <Icon name="arrowRight" size={16} className="shrink-0 text-ink transition-transform group-hover:translate-x-1" />
             </button>
           </li>
         )}
       </ul>
 
-      <AnimatePresence>
-        {open && wechat && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 p-4 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setOpen(false)}
+      {open && wechat && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          onClick={() => setOpen(false)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="wechat-title"
+            className="relative w-full max-w-sm bg-white p-8 text-center"
+            onClick={(e) => e.stopPropagation()}
           >
-            <motion.div
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="wechat-title"
-              className="relative w-full max-w-sm rounded-3xl bg-card p-7 text-center shadow-2xl"
-              initial={{ scale: 0.7, rotate: -4, y: 40 }}
-              animate={{ scale: 1, rotate: 0, y: 0 }}
-              exit={{ scale: 0.9, y: 20, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 220, damping: 16 }}
-              onClick={(e) => e.stopPropagation()}
+            <button
+              type="button"
+              aria-label={labels.close}
+              onClick={() => setOpen(false)}
+              autoFocus
+              className="absolute right-3 top-3 flex size-10 items-center justify-center text-muted hover:text-ink"
             >
-              <button
-                type="button"
-                aria-label={labels.close}
-                className="absolute right-3 top-3 flex size-10 items-center justify-center rounded-full text-muted hover:bg-sand"
-                onClick={() => setOpen(false)}
-                autoFocus
-              >
-                <Icon name="x" size={20} />
+              <Icon name="x" size={20} />
+            </button>
+            <h3 id="wechat-title" className="display text-3xl">
+              {labels.wechatTitle}
+            </h3>
+            <p className="mt-2 text-sm">{labels.wechatScan}</p>
+            {wechat.qr?.asset && (
+              <Image
+                src={urlFor(wechat.qr).width(400).url()}
+                alt={labels.wechatTitle}
+                width={208}
+                height={208}
+                className="mx-auto mt-6 size-52 object-contain"
+              />
+            )}
+            <div className="mt-6 flex items-center justify-center gap-3 border border-line px-4 py-3">
+              <span className="font-semibold text-ink">{wechat.id}</span>
+              <button type="button" onClick={copyId} className="flex items-center gap-1 text-sm font-semibold text-gold">
+                <Icon name={copied ? "check" : "copy"} size={15} />
+                {copied ? labels.copied : labels.copy}
               </button>
-              <h4 id="wechat-title" className="font-display text-2xl font-semibold text-ink">
-                {labels.wechatTitle}
-              </h4>
-              <p className="mt-2 text-sm text-muted">{labels.wechatScan}</p>
-              {wechat.qr && (
-                <div className="relative mx-auto mt-5 size-52 overflow-hidden rounded-2xl border border-sand-deep bg-linen">
-                  <Image src={wechat.qr} alt={labels.wechatTitle} fill sizes="208px" className="object-contain p-3" />
-                </div>
-              )}
-              <div className="mt-5 flex items-center justify-center gap-2 rounded-full bg-sand px-4 py-2">
-                <span className="font-semibold text-ink">{wechat.id}</span>
-                <button
-                  type="button"
-                  onClick={copyId}
-                  className="flex items-center gap-1 rounded-full px-2 py-1 text-sm font-semibold text-terracotta hover:bg-card"
-                >
-                  <Icon name={copied ? "check" : "copy"} size={15} />
-                  {copied ? labels.copied : labels.copy}
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

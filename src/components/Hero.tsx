@@ -1,87 +1,85 @@
-import { formatPrice, lowestPrice, site, type Room } from "@/lib/content";
-import { fmt, type Dictionary } from "@/lib/i18n";
-import { HeroIllustration } from "./HeroIllustration";
-import { Icon } from "./Icon";
-import { Photo } from "./Photo";
-import { DriftingGlow, FloatingPetals, HeroTitle, IdleSway, Magnetic } from "./motion";
+import { fmt, formatPrice } from "@/lib/format";
+import type { Dictionary } from "@/lib/i18n";
+import type { Locale } from "@/lib/locales";
+import type { RoomCardData, SiteSettings } from "@/sanity/types";
+import { HeroSearch } from "./HeroSearch";
+import { Icon, type IconName } from "./Icon";
+import { SanityImage } from "./SanityImage";
 
-export function Hero({ dict, rooms }: { dict: Dictionary; rooms: Room[] }) {
-  const { hero } = dict;
-  const price = lowestPrice(rooms);
-  const availableNow = rooms.filter((r) => r.status !== "rented" && r.status !== "soon").length;
+// Budget steps for the search box, based on the room prices.
+function budgetSteps(prices: number[]) {
+  if (prices.length === 0) return [];
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  const steps: number[] = [];
+  for (let v = Math.ceil(min / 100) * 100; v < max; v += 100) steps.push(v);
+  steps.push(Math.ceil(max / 50) * 50);
+  return [...new Set(steps)];
+}
 
-  const facts = [
-    price !== undefined && { icon: "home" as const, text: fmt(hero.factFrom, { price: formatPrice(price) }) },
-    { icon: "sofa" as const, text: hero.factFurnished },
-    { icon: "calendar" as const, text: fmt(hero.factMinLease, { months: site.policies.minLeaseMonths }) },
-  ].filter(Boolean) as { icon: "home" | "sofa" | "calendar"; text: string }[];
+export function Hero({
+  lang,
+  dict,
+  settings,
+  rooms,
+}: {
+  lang: Locale;
+  dict: Dictionary;
+  settings: SiteSettings;
+  rooms: RoomCardData[];
+}) {
+  const { hero, highlights } = dict;
+  const prices = rooms.map((r) => r.priceFrom).filter((p): p is number => typeof p === "number");
+  const lowest = prices.length ? Math.min(...prices) : null;
+
+  const items: { icon: IconName; label: string; value: string }[] = [
+    ...(lowest !== null
+      ? [{ icon: "home" as const, label: highlights.fromLabel, value: fmt(highlights.fromValue, { price: formatPrice(lowest) }) }]
+      : []),
+    { icon: "sofa", label: highlights.furnishedLabel, value: highlights.furnishedValue },
+    {
+      icon: "calendar",
+      label: highlights.leaseLabel,
+      value: fmt(highlights.leaseValue, { n: settings.minLeaseMonths ?? 3 }),
+    },
+    { icon: "key", label: highlights.familyLabel, value: highlights.familyValue },
+  ];
 
   return (
-    <section className="relative -mt-18 overflow-hidden pt-18">
-      <DriftingGlow />
-      <FloatingPetals />
+    <>
+      <section className="relative flex min-h-[640px] items-end bg-night h-[92svh]">
+        <SanityImage image={settings.heroImage} alt={hero.title} preload sizes="100vw" />
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-black/35" />
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/10 to-transparent" />
 
-      <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-10 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:pb-28 lg:pt-16">
-        <div>
-          <p className="eyebrow">{hero.eyebrow}</p>
-          <HeroTitle
-            text={hero.title}
-            className="mt-4 font-display text-[2.6rem] font-semibold leading-[1.08] text-ink sm:text-6xl lg:text-[4.2rem]"
-          />
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted">{hero.subtitle}</p>
-
-          <div className="mt-9 flex flex-wrap items-center gap-4">
-            <Magnetic>
-              <a href="#rooms" className="btn-primary shimmer">
-                {hero.ctaRooms}
-                <Icon name="arrowRight" size={18} />
-              </a>
-            </Magnetic>
-            <a href="#contact" className="btn-secondary">
-              {hero.ctaContact}
-            </a>
+        <div className="container-x relative pb-14 pt-32 sm:pb-20">
+          <p className="eyebrow !text-white/90">{hero.eyebrow}</p>
+          <h1 className="display mt-5 max-w-3xl text-5xl !text-white sm:text-7xl lg:text-[5.5rem]">{hero.title}</h1>
+          <p className="mt-5 max-w-xl text-lg text-white/85">{hero.subtitle}</p>
+          <div className="mt-10">
+            <HeroSearch lang={lang} t={hero} budgets={budgetSteps(prices)} />
           </div>
-
-          <ul className="mt-10 flex flex-wrap gap-2.5">
-            {facts.map((fact) => (
-              <li key={fact.text} className="chip">
-                <Icon name={fact.icon} size={16} className="text-terracotta" />
-                {fact.text}
-              </li>
-            ))}
-          </ul>
         </div>
+      </section>
 
-        <div className="relative mx-auto w-full max-w-[26rem]">
-          <IdleSway className="relative aspect-[440/520]">
-            {site.heroImage ? (
-              <div className="absolute inset-0 overflow-hidden rounded-t-[999px] rounded-b-3xl border-4 border-sand-deep">
-                <Photo
-                  src={site.heroImage}
-                  alt={site.name}
-                  placeholderLabel={dict.photoPlaceholder}
-                  sizes="(min-width: 1024px) 420px, 90vw"
-                  preload
-                />
+      <section className="border-b border-line">
+        <ul className="container-x grid grid-cols-2 lg:grid-cols-4">
+          {items.map((item, i) => (
+            <li
+              key={item.label}
+              className={`flex items-center gap-4 py-7 lg:py-9 ${i % 2 ? "pl-4 sm:pl-8" : ""} ${
+                i > 0 ? "lg:border-l lg:border-line lg:pl-8" : ""
+              } ${i < 2 ? "border-b border-line lg:border-b-0" : ""}`}
+            >
+              <Icon name={item.icon} size={26} className="hidden shrink-0 text-gold sm:block" />
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted">{item.label}</p>
+                <p className="display mt-1 text-xl sm:text-2xl">{item.value}</p>
               </div>
-            ) : (
-              <HeroIllustration title={hero.illustration} />
-            )}
-          </IdleSway>
-
-          {availableNow > 0 && (
-            <div className="absolute -bottom-5 -left-2 flex items-center gap-3 rounded-2xl border border-sand-deep bg-card px-4 py-3 shadow-[0_18px_40px_-20px_rgba(78,52,36,0.45)] sm:-left-8">
-              <span className="relative flex size-3">
-                <span className="status-ping absolute inset-0 rounded-full bg-sage" />
-                <span className="relative size-3 rounded-full bg-sage" />
-              </span>
-              <span className="text-sm font-semibold text-ink">
-                {fmt(hero.availableCount, { n: availableNow })}
-              </span>
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </>
   );
 }

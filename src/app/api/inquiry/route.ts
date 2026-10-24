@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { site } from "@/lib/content";
+import { SITE_NAME } from "@/lib/site";
 
 // Receives the inquiry form and forwards it by email (Resend) and Telegram.
 // Configure with the variables in .env.example. With none set, it runs in test mode
@@ -43,7 +43,7 @@ function clean(body: unknown): Inquiry {
 
 function summary(i: Inquiry): string {
   return [
-    `New inquiry from the ${site.name} website`,
+    `New inquiry from the ${SITE_NAME} website`,
     "",
     `Name: ${i.name}`,
     `Email: ${i.email}`,
@@ -69,7 +69,7 @@ async function sendEmail(inquiry: Inquiry, text: string) {
     method: "POST",
     headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: process.env.INQUIRY_FROM_EMAIL || `${site.name} Website <onboarding@resend.dev>`,
+      from: process.env.INQUIRY_FROM_EMAIL || `${SITE_NAME} Website <onboarding@resend.dev>`,
       to: to.split(",").map((s) => s.trim()),
       reply_to: inquiry.email,
       subject: `New inquiry: ${inquiry.name}${inquiry.roomName ? ` — ${inquiry.roomName}` : ""}`,
