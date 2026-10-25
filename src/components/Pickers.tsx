@@ -47,17 +47,24 @@ function usePopover() {
   return { open, setOpen, close, root, trigger };
 }
 
-// Shifts an open popover sideways so it never touches the screen edge on small phones.
+// Shifts an open popover sideways so it never touches the screen edge on small phones,
+// and scrolls the page just enough to show all of it when it opens near the bottom.
 function useKeepInView(open: boolean) {
   const ref = useRef<HTMLElement | null>(null);
   const [shift, setShift] = useState(0);
   useLayoutEffect(() => {
     if (!open || !ref.current) return setShift(0);
-    const r = ref.current.getBoundingClientRect();
+    const el = ref.current;
+    const r = el.getBoundingClientRect();
     const margin = 12;
     const vw = document.documentElement.clientWidth;
     if (r.right > vw - margin) setShift(vw - margin - r.right);
     else if (r.left < margin) setShift(margin - r.left);
+    if (r.bottom > window.innerHeight - margin) {
+      const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      el.style.scrollMarginBottom = `${margin}px`;
+      el.scrollIntoView({ block: "nearest", behavior: smooth ? "smooth" : "auto" });
+    }
   }, [open]);
   return { ref, style: shift ? { marginLeft: shift } : undefined };
 }
