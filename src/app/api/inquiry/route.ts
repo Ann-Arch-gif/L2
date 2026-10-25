@@ -31,14 +31,54 @@ const limits: Record<keyof Inquiry, number> = {
   company: 200,
 };
 
+// The form sends a few KB at most; anything bigger is refused before it is read.
+const MAX_BODY_BYTES = 16_000;
+
 function clean(body: unknown): Inquiry {
   const source = (body && typeof body === "object" ? body : {}) as Record<string, unknown>;
   const result = {} as Inquiry;
   for (const key of Object.keys(limits) as (keyof Inquiry)[]) {
     const value = source[key];
-    result[key] = typeof value === "string" ? value.trim().slice(0, limits[key]) : "";
+    let text = typeof value === "string" ? value.trim().slice(0, limits[key]) : "";
+    // Only the message may span lines; elsewhere line breaks could forge email headers.
+    if (key !== "message") text = text.replace(/[\r\n\t]+/g, " ");
+    result[key] = text;
   }
   return result;
+}
+
+// Spam protection: each visitor may send a few enquiries per window. Kept in memory, so it is
+// per server instance, which is enough to stop one script from flooding the family's inbox.
+const RATE_LIMIT = 5;
+const RATE_WINDOW_MS = 10 * 60 * 1000;
+const recent = new Map<string, number[]>();
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const times = (recent.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  const limited = times.length >= RATE_LIMIT;
+  if (!limited) times.push(now);
+  recent.set(ip, times);
+  if (recent.size > 5000) {
+    for (const [key, list] of recent) if (list.every((t) => now - t >= RATE_WINDOW_MS)) recent.delete(key);
+  }
+  return limited;
+}
+
+function clientIp(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  return forwarded?.split(",")[0].trim() || request.headers.get("x-real-ip") || "unknown";
+}
+
+// Browsers send Origin with every form post; reject posts from other websites.
+function isSameOrigin(request: Request): boolean {
+  const origin = request.headers.get("origin");
+  if (!origin) return true;
+  try {
+    return new URL(origin).host === new URL(request.url).host || new URL(origin).host === request.headers.get("host");
+  } catch {
+    return false;
+  }
 }
 
 function summary(i: Inquiry): string {
@@ -95,9 +135,19 @@ async function sendTelegram(text: string) {
 }
 
 export async function POST(request: Request) {
+  if (!isSameOrigin(request)) return NextResponse.json({ ok: false, error: "forbidden" }, { status: 403 });
+  if (Number(request.headers.get("content-length") ?? 0) > MAX_BODY_BYTES) {
+    return NextResponse.json({ ok: false, error: "too_large" }, { status: 413 });
+  }
+  if (isRateLimited(clientIp(request))) {
+    return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
+  }
+
   let inquiry: Inquiry;
   try {
-    inquiry = clean(await request.json());
+    const raw = await request.text();
+    if (raw.length > MAX_BODY_BYTES) return NextResponse.json({ ok: false, error: "too_large" }, { status: 413 });
+    inquiry = clean(JSON.parse(raw));
   } catch {
     return NextResponse.json({ ok: false, error: "invalid_json" }, { status: 400 });
   }
@@ -105,7 +155,7 @@ export async function POST(request: Request) {
   // Honeypot: real visitors never see this field.
   if (inquiry.company) return NextResponse.json({ ok: true });
 
-  if (!inquiry.name || !/^\S+@\S+\.\S+$/.test(inquiry.email) || !inquiry.message) {
+  if (!inquiry.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inquiry.email) || !inquiry.message) {
     return NextResponse.json({ ok: false, error: "invalid" }, { status: 400 });
   }
 

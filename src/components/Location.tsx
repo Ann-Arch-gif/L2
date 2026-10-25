@@ -5,7 +5,10 @@ import type { SiteSettings } from "@/sanity/types";
 import { Icon } from "./Icon";
 
 function mapSrc(settings: SiteSettings, lang: Locale) {
-  if (settings.mapEmbedUrl) return settings.mapEmbedUrl;
+  // Only Google Maps embeds are allowed (see the Content-Security-Policy in next.config.ts).
+  if (settings.mapEmbedUrl && /^https:\/\/(www|maps)\.google\.com\//.test(settings.mapEmbedUrl)) {
+    return settings.mapEmbedUrl;
+  }
   const query = encodeURIComponent(settings.address || `${SITE_NAME}, Siem Reap`);
   return `https://www.google.com/maps?q=${query}&hl=${lang === "zh" ? "zh-CN" : lang}&z=15&output=embed`;
 }

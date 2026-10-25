@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
     revalidateTag(CONTENT_TAG, { expire: 0 });
     return NextResponse.json({ revalidated: true });
   } catch (error) {
-    return new Response((error as Error).message, { status: 500 });
+    console.error("[revalidate] failed:", error);
+    return new Response("Revalidation failed", { status: 500 });
   }
 }
