@@ -413,6 +413,42 @@
       transform: translateY(-6px) scale(0.98);
     }
   }
+  /* A menu that stays in the page and glides open and shut (data-open toggles it).
+     Closing is quicker than opening, and its items settle in one after another. */
+  .menu-panel {
+    transform-origin: top right;
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+    visibility: hidden;
+    transition:
+      opacity var(--dur-fast) var(--ease-in),
+      transform var(--dur-fast) var(--ease-in),
+      visibility 0s linear var(--dur-fast);
+  }
+  .menu-panel[data-open] {
+    opacity: 1;
+    transform: none;
+    visibility: visible;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out),
+      visibility 0s;
+  }
+  .menu-panel .menu-item {
+    opacity: 0;
+    transform: translateY(-4px);
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+  .menu-panel[data-open] .menu-item {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--dur-base) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out);
+    transition-delay: calc(80ms + var(--i, 0) * 50ms);
+  }
   .fade-in {
     transition: opacity var(--dur-base) var(--ease-out);
     @starting-style {

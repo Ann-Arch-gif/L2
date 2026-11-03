@@ -17,7 +17,6 @@ const contentSecurityPolicy = [
   "base-uri 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
-  ...(isDev ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");
 
 const securityHeaders = [
@@ -31,6 +30,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Let phones on the same Wi-Fi use the dev server (e.g. http://10.10.101.239:3000).
+  allowedDevOrigins: ["10.*.*.*", "172.*.*.*", "192.168.*.*"],
   images: {
     // Photos come from Sanity's image CDN, which resizes them itself.
     loader: "custom",

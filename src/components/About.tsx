@@ -7,7 +7,7 @@ export function About({ dict, settings }: { dict: Dictionary; settings: SiteSett
   return (
     <section id="about" className="section scroll-mt-20 bg-paper">
       <div className="container-x grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-        <div className="reveal relative aspect-[4/5] overflow-hidden bg-sand">
+        <div className="reveal relative aspect-[4/5] overflow-hidden bg-sand sm:aspect-[16/10] lg:aspect-[4/5]">
           <SanityImage
             image={settings.aboutImage}
             alt={about.title}

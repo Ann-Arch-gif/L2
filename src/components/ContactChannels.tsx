@@ -38,33 +38,41 @@ export function ContactChannels({
     }
   }
 
-  const row = "group flex w-full items-center gap-4 border-b border-line py-4 text-left";
+  // Icon-only buttons; the name shows in a small tooltip on hover or keyboard focus.
+  const tile =
+    "group relative flex aspect-square w-full items-center justify-center border border-line text-gold transition-[background-color,border-color,color,transform] duration-(--dur-base) ease-(--ease-out) hover:-translate-y-0.5 hover:border-ink hover:bg-ink hover:text-white focus-visible:border-ink sm:size-14";
+  const tip = (text: string) => (
+    <span
+      aria-hidden
+      className="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 translate-y-1 whitespace-nowrap bg-ink px-2.5 py-1 text-xs font-semibold text-white opacity-0 transition-[opacity,transform] duration-(--dur-base) ease-(--ease-out) group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
+    >
+      {text}
+    </span>
+  );
 
   return (
     <div>
       <p className="eyebrow">{labels.channels}</p>
-      <ul className="mt-4 border-t border-line">
+      <ul className="mt-5 grid grid-cols-6 gap-2 sm:flex sm:flex-wrap sm:gap-3">
         {channels.map((c) => (
           <li key={c.id}>
-            <a href={c.href} target={c.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className={row}>
-              <Icon name={c.icon} size={20} className="shrink-0 text-gold" />
-              <span className="min-w-0 flex-1">
-                <span className="block text-xs font-semibold uppercase tracking-[0.12em] text-muted">{c.label}</span>
-                <span className="block truncate text-ink">{c.value}</span>
-              </span>
-              <Icon name="arrowRight" size={16} className="shrink-0 text-ink transition-transform group-hover:translate-x-1" />
+            <a
+              href={c.href}
+              target={c.href.startsWith("http") ? "_blank" : undefined}
+              rel="noopener noreferrer"
+              aria-label={`${c.label}: ${c.value}`}
+              className={tile}
+            >
+              <Icon name={c.icon} size={22} />
+              {tip(c.label)}
             </a>
           </li>
         ))}
         {wechat && (
           <li>
-            <button type="button" className={row} onClick={() => setOpen(true)}>
-              <Icon name="wechat" size={20} className="shrink-0 text-gold" />
-              <span className="min-w-0 flex-1">
-                <span className="block text-xs font-semibold uppercase tracking-[0.12em] text-muted">{labels.wechat}</span>
-                <span className="block truncate text-ink">{wechat.id}</span>
-              </span>
-              <Icon name="arrowRight" size={16} className="shrink-0 text-ink transition-transform group-hover:translate-x-1" />
+            <button type="button" aria-label={`${labels.wechat}: ${wechat.id}`} className={tile} onClick={() => setOpen(true)}>
+              <Icon name="wechat" size={22} />
+              {tip(labels.wechat)}
             </button>
           </li>
         )}

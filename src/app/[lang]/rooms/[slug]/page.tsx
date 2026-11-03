@@ -9,7 +9,7 @@ import { RoomGallery } from "@/components/RoomGallery";
 import { StatusBadge } from "@/components/StatusBadge";
 import { leaseTerms } from "@/components/TermsFaq";
 import { getChannels } from "@/lib/channels";
-import { fmt, formatPrice, stagger } from "@/lib/format";
+import { fmt, formatPrice, loneOnTablet, stagger } from "@/lib/format";
 import { getDictionary } from "@/lib/i18n";
 import { hasLocale } from "@/lib/locales";
 import {
@@ -235,7 +235,7 @@ export default async function RoomPage({ params }: PageProps<"/[lang]/rooms/[slu
             <h2 className="display text-4xl">{t.otherRooms}</h2>
             <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {others.map((r, i) => (
-                <div key={r._id} className="reveal" style={stagger(i)}>
+                <div key={r._id} className={`reveal ${loneOnTablet(i, others.length) ? "sm:max-lg:hidden" : ""}`} style={stagger(i)}>
                   <RoomCard room={r} lang={lang} t={dict.rooms} placeholder={dict.photoPlaceholder} />
                 </div>
               ))}

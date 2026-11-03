@@ -4,6 +4,10 @@ import type { Locale } from "./locales";
 // Position in a staggered sequence (read by the .reveal / .hero-rise / .stagger-in CSS).
 export const stagger = (i: number) => ({ "--i": i }) as CSSProperties;
 
+// A short row of cards shows 3 across on desktop but 2 across on tablets, where an odd last card
+// would sit alone; that card is left out on tablets (sm:max-lg:hidden).
+export const loneOnTablet = (i: number, count: number) => count > 1 && count % 2 === 1 && i === count - 1;
+
 const months: Record<Exclude<Locale, "zh">, string[]> = {
   en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
   km: ["មករា", "កុម្ភៈ", "មីនា", "មេសា", "ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា", "វិច្ឆិកា", "ធ្នូ"],

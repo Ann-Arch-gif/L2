@@ -45,34 +45,61 @@ function LanguageMenu({ lang, label, light }: { lang: Locale; label: string; lig
         aria-label={label}
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className={`flex h-11 items-center gap-1.5 px-2 text-sm font-semibold ${light ? "text-white" : "text-ink"}`}
+        className={`flex h-11 items-center gap-1.5 px-2 text-sm font-semibold transition-opacity hover:opacity-75 ${
+          light ? "text-white" : "text-ink"
+        }`}
       >
         <Icon name="globe" size={17} />
         {localeShortLabels[lang]}
-        <Icon name="chevronDown" size={14} />
+        <Icon
+          name="chevronDown"
+          size={14}
+          className={`transition-transform duration-(--dur-base) ease-(--ease-out) ${open ? "rotate-180" : ""}`}
+        />
       </button>
-      {open && (
-        <ul className="pop-in absolute right-0 top-full z-50 mt-2 min-w-40 border border-line bg-white py-1 shadow-[0_18px_40px_-18px_rgba(0,0,0,0.3)]">
-          {locales.map((locale) => (
-            <li key={locale}>
-              <Link
-                href={hrefFor(locale)}
-                lang={locale}
-                hrefLang={locale}
-                aria-current={locale === lang ? "true" : undefined}
-                onClick={() => {
-                  rememberLocale(locale);
-                  setOpen(false);
-                }}
-                className="flex items-center justify-between gap-4 px-4 py-2.5 text-sm text-ink transition-colors hover:bg-paper"
-              >
-                {localeLabels[locale]}
-                {locale === lang && <Icon name="check" size={15} />}
-              </Link>
-            </li>
-          ))}
+      {/* Always rendered so it can animate out as well as in; hidden from focus while closed. */}
+      <div
+        data-open={open || undefined}
+        inert={!open}
+        className="menu-panel absolute right-0 top-full z-50 mt-3 w-52 border border-line bg-white shadow-[0_24px_48px_-20px_rgba(21,24,27,0.35)]"
+      >
+        <p className="border-b border-line px-5 pb-2.5 pt-3.5 text-[0.6875rem] font-semibold uppercase tracking-[0.18em] text-muted">
+          {label}
+        </p>
+        <ul className="py-1.5">
+          {locales.map((locale, i) => {
+            const current = locale === lang;
+            return (
+              <li key={locale} className="menu-item" style={stagger(i)}>
+                <Link
+                  href={hrefFor(locale)}
+                  lang={locale}
+                  hrefLang={locale}
+                  aria-current={current ? "true" : undefined}
+                  onClick={() => {
+                    rememberLocale(locale);
+                    setOpen(false);
+                  }}
+                  className={`group relative flex min-h-11 items-center justify-between gap-4 px-5 text-[0.9375rem] transition-colors duration-(--dur-base) hover:bg-paper ${
+                    current ? "font-semibold text-ink" : "text-body hover:text-ink"
+                  }`}
+                >
+                  <span
+                    aria-hidden
+                    className={`absolute inset-y-2 left-0 w-0.5 bg-gold transition-transform duration-(--dur-base) ease-(--ease-out) ${
+                      current ? "scale-y-100" : "scale-y-0 group-hover:scale-y-100"
+                    }`}
+                  />
+                  <span className="transition-transform duration-(--dur-base) ease-(--ease-out) group-hover:translate-x-1">
+                    {localeLabels[locale]}
+                  </span>
+                  <Icon name="check" size={16} className={`text-gold ${current ? "" : "invisible"}`} />
+                </Link>
+              </li>
+            );
+          })}
         </ul>
-      )}
+      </div>
     </div>
   );
 }

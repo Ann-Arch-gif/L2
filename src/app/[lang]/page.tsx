@@ -13,7 +13,7 @@ import { RoomCard } from "@/components/RoomCard";
 import { SectionHeader } from "@/components/SectionHeader";
 import { Services } from "@/components/Services";
 import { TermsFaq } from "@/components/TermsFaq";
-import { stagger } from "@/lib/format";
+import { loneOnTablet, stagger } from "@/lib/format";
 import { getDictionary } from "@/lib/i18n";
 import { hasLocale } from "@/lib/locales";
 import { byAvailability } from "@/lib/room-utils";
@@ -47,7 +47,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
             />
             <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {featured.map((room, i) => (
-                <div key={room._id} className="reveal" style={stagger(i)}>
+                <div key={room._id} className={`reveal ${loneOnTablet(i, featured.length) ? "sm:max-lg:hidden" : ""}`} style={stagger(i)}>
                   <RoomCard room={room} lang={lang} t={dict.rooms} placeholder={dict.photoPlaceholder} />
                 </div>
               ))}
